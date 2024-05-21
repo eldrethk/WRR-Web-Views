@@ -1,0 +1,145 @@
+﻿@model WRR.Areas.Reserv.Models.PackageRatesViewModel
+
+<div class="modal-header">
+    <h2 class="modal-title h3 form-padding-left">@Html.DisplayFor(model => model.RoomType.Name)</h2>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <h4 class="text-primary p-2">@Html.DisplayFor(model => model.Package.Name)</h4>
+    @if (Model.ViewRate == "Basic")
+    {
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <td class="pl-4"><strong>Deposit:</strong></td>
+                    <td>$@Html.DisplayFor(model => model.Deposit)</td>
+                </tr>
+                <tr>
+                    <td class="pl-4"><strong>Original Rate: </strong></td>
+                    <td>$@Html.DisplayFor(model => model.OriginalRate)</td>
+                </tr>
+                <tr>
+                    <td class="pl-4"><strong>Discount : </strong></td>
+                    <td class="text-danger">$@Html.DisplayFor(model => model.Discount)</td>
+                </tr>
+                <tr>
+                    <td class="pl-4"><strong>SubTotal:</strong></td>
+                    <td> $@Html.DisplayFor(model => model.SubTotal)</td>
+                </tr>
+                <tr style="border-bottom: 2px solid #999;">
+
+                    <td class="pl-4"><strong>Taxes:</strong></td>
+                    <td>$@Html.DisplayFor(model => model.ExtraFees)</td>
+                </tr>
+                <tr>
+                    <td class="pl-4"><strong>Total: </strong></td>
+                    <td>$@Html.DisplayFor(model => model.Total)</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>Date</td>
+                    <td></td>
+                    <td>Rate</td>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 0;
+                    foreach (var daily in Model.RackRatesDates)
+                    {
+                        decimal percent = Model.Package.PercentageOff ?? 0;
+                        decimal discount = Model.Rates[i] * (percent / 100);
+                        decimal newprice = Model.Rates[i] - discount;
+                        <tr>
+                            <td>@Convert.ToDateTime(daily.Date).ToString("dddd, MMM-dd-yyyy")</td>
+                            <td><span style='color:red;text-decoration:line-through'><span style='color:black'>$@Html.DisplayFor(item => Model.Rates[i])</span></span></td>
+                            <td>$@String.Format("{0:0.00}", newprice)</td>
+
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+        <div class="float-right mb-5">
+            <table style="width: 260px;">
+                <tbody>
+                    <tr>
+                        <td class="pl-4"><strong>Deposit:</strong></td>
+                        <td>$@Html.DisplayFor(model => model.Deposit)</td>
+                    </tr>
+
+                    <tr>
+                        <td class="pl-4"><strong>SubTotal:</strong></td>
+                        <td> $@Html.DisplayFor(model => model.SubTotal)</td>
+                    </tr>
+                    <tr style="border-bottom: 2px solid #999;">
+
+                        <td class="pl-4"><strong>Taxes:</strong></td>
+                        <td>$@Html.DisplayFor(model => model.ExtraFees)</td>
+                    </tr>
+                    <tr>
+                        <td class="pl-4"><strong>Total: </strong></td>
+                        <td>$@Html.DisplayFor(model => model.Total)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+    <div class="mt-5 alert alert-dismissible alert-secondary" style="clear:both;">
+        <p><strong>Valid Dates:</strong></p>
+        <p>@Html.DisplayFor(model => model.Package.ValidFrom) - @Html.DisplayFor(model => model.Package.ValidtTo)</p>
+        <p><strong>Arrival Day: </strong></p>
+        <p>
+            @if (Model.Package.ArrMon == true && Model.Package.ArrTues == true && Model.Package.ArrWed == true && Model.Package.ArrThurs == true && Model.Package.ArrFri == true && Model.Package.ArrSat == true && Model.Package.ArrSun == true)
+            {<span>Any day of the week</span>}
+            else
+            {
+                List<string> listofDays = new List<string>();
+                if (Model.Package.ArrMon == true)
+                { listofDays.Add("Mon"); }
+                if (Model.Package.ArrTues == true)
+                { listofDays.Add("Tues"); }
+                if (Model.Package.ArrWed == true)
+                { listofDays.Add("Weds"); }
+                if (Model.Package.ArrThurs == true)
+                { listofDays.Add("Thurs"); }
+                if (Model.Package.ArrFri == true)
+                { listofDays.Add("Fri"); }
+                if (Model.Package.ArrSat == true)
+                { listofDays.Add("Sat"); }
+                if (Model.Package.ArrSun == true)
+                { listofDays.Add("Sun"); }
+                int last = listofDays.Count - 1;
+                for (int i = 0; i <= last; i++)
+                {
+                    if (i == last)
+                    {
+                        <span>@listofDays[i].ToString()</span>
+                        break;
+                    }
+                    else
+                    {
+                        <span>@listofDays[i].ToString() , </span>
+                    }
+                }
+            }
+        </p>
+        <p><strong>Length of Stay:</strong></p>
+        <p>@Html.DisplayFor(model => model.Package.MinDays) nights min / @Html.DisplayFor(model => model.Package.MaxDays) nights max</p>
+    </div>
+      
+
+</div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+

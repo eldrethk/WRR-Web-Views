@@ -1,0 +1,84 @@
+﻿@model WRR.Areas.Reserv.Models.BookReservationViewModel
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+
+</head>
+<body>
+    <div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td colspan="2" style="padding:.3rem 0rem;">
+                    <strong>Reservation has been made</strong>
+                </td>
+            </tr>
+          
+              
+                <tr>
+                    <td style="padding:.3rem 0rem;">Confirmation Number</td>
+                    <td style="padding:.3rem 0rem;">@Model.PackageReservation.PKReservationID</td>
+                </tr>
+            <tr>
+                    <td style="padding:.3rem 0rem;">Package</td>
+                    <td style="padding:.3rem 0rem;">@Model.PackageName</td>
+                </tr>
+
+            <tr>
+                <td style="padding:.3rem 0rem;">Name</td>
+                <td style="padding:.3rem 0rem;">@Model.PackageReservation.CusFirstName @Model.PackageReservation.CusLastName</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Email</td>
+                <td style="padding:.3rem 0rem;">@Model.PackageReservation.CusEmail</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Phone</td>
+                <td style="padding:.3rem 0rem;">@Model.PackageReservation.CusDayPhone</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Book Date</td>
+                <td style="padding:.3rem 0rem;">@Model.PackageReservation.ReservationCreated</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Check In</td>
+                <td style="padding:.3rem 0rem;">@Model.PackageReservation.ArrivalDate.ToString("ddd, MMM dd, yyyy")</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Check Out</td>
+                <td style="padding:.3rem 0rem;">@Model.PackageReservation.DepartureDate.ToString("ddd, MMM dd, yyyy")</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Adults</td>
+                <td style="padding:.3rem 0rem;">@Model.PackageReservation.Adults</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Children</td>
+                <td style="padding:.3rem 0rem;">@Model.PackageReservation.Children</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Total Charge</td>
+                <td style="padding:.3rem 0rem;">@string.Format("{0:C}", Model.PackageReservation.TotalCharge)</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Deposit</td>
+                <td style="padding:.3rem 0rem;">@string.Format("{0:C}", Model.PackageReservation.Deposit)</td>
+            </tr>
+            <tr>
+                <td style="padding:.3rem 0rem;">Room Type</td>
+                <td style="padding:.3rem 0rem;">@Model.RoomType.RoomType.Name</td>
+            </tr>
+            @if (Model.PackageReservation.Comments.Length > 0)
+            {
+                <tr>
+                    <td style="padding:.3rem 0rem;">Comment</td>
+                    <td style="padding:.3rem 0rem;">@Model.PackageReservation.Comments</td>
+                </tr>
+            }
+        </table>
+    </div>
+</body>
+</html>

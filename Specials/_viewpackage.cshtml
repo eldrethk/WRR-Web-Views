@@ -1,0 +1,60 @@
+﻿@model WRR.Data.Models.Package.Package
+
+@using WRR.Extensions
+
+<div class="modal-header">
+    <h2 class="modal-title h3 form-padding-left text-primary">  @Html.DisplayFor(model => model.Name)</h2>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    @Html.Raw(HttpUtility.HtmlDecode(Model.Description.ToString()))
+    <div class="mt-5 alert alert-secondary">
+        <p><strong>Valid Dates:</strong></p>
+        <p>@Html.DisplayFor(model => model.ValidFrom) - @Html.DisplayFor(model => model.ValidtTo)</p>
+        <p><strong>Arrival Day: </strong></p>
+        <p>
+            @if (Model.ArrMon == true && Model.ArrTues == true && Model.ArrWed == true && Model.ArrThurs == true && Model.ArrFri == true && Model.ArrSat == true && Model.ArrSun == true)
+            {<span>Any day of the week</span>}
+            else
+            {
+
+                List<string> listofDays = new List<string>();
+                if (Model.ArrMon == true)
+                { listofDays.Add("Mon"); }
+                if (Model.ArrTues == true)
+                { listofDays.Add("Tues"); }
+                if (Model.ArrWed == true)
+                { listofDays.Add("Weds"); }
+                if (Model.ArrThurs == true)
+                { listofDays.Add("Thurs"); }
+                if (Model.ArrFri == true)
+                { listofDays.Add("Fri"); }
+                if (Model.ArrSat == true)
+                { listofDays.Add("Sat"); }
+                if (Model.ArrSun == true)
+                { listofDays.Add("Sun"); }
+                int last = listofDays.Count - 1;
+                for (int i = 0; i <= last; i++)
+                {
+                    if (i == last)
+                    {
+                        <span>@listofDays[i].ToString()</span>
+                        break;
+                    }
+                    else
+                    {
+                        <span>@listofDays[i].ToString() , </span>
+                    }
+                }
+            }
+        </p>
+        <p><strong>Length of Stay:</strong></p>
+        <p>@Html.DisplayFor(model => model.MinDays) nights min / @Html.DisplayFor(model => model.MaxDays) nights max</p>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

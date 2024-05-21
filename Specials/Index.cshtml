@@ -1,0 +1,105 @@
+﻿@model WRR.Areas.Reserv.Models.SpecialsPageViewModel
+
+@using WRR.Extensions
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Reserv/Views/Shared/_ReservLayout.cshtml";
+}
+
+
+<div class="container rounded my-4 bg-gray-200 p-3">
+    <div class="bg-white rounded p-4">
+        @{
+            var itemcount = 0;
+        }
+        @foreach (var package in Model.Packages)
+        {
+            if (itemcount % 3 == 0 || itemcount % 3 == 3)
+            {
+                @Html.Raw("<div class='row mb-5'>")
+            }
+            <div class="col-md-4">
+                <div class="card rounded h-100 round-border">
+                    <div class="card-header p-0">
+                        @Html.Image("PackageImg", String.Format("/Content/package-images/{0}", package.SmImage), "", "width:100%")
+                    </div>
+                    <div class="card-body">
+                        <h3>@Html.DisplayFor(item => package.Name)</h3>
+                        <p>@Html.DisplayFor(item => package.ShortDescription)</p>
+                        <p><button type="button" id="btnViewMore" class="anchorMore cartlink" data-id="@package.PackageID">View More Details</button></p>
+                        <p>@Html.ActionLink("Select", "Special", new { id = Model.Hotel.HotelID, packageid = package.PackageID }, new { @class = "btn btn-primary w-100" })</p>
+                    </div>
+                </div>
+            </div>
+            itemcount++;
+            if (itemcount % 3 == 0 || itemcount % 3 == 3)
+            {
+                @Html.Raw("</div>")
+            }
+        }
+    </div>
+</div>
+
+<div id="CustomMsg" class="modal" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">@Html.Raw(HttpUtility.HtmlDecode(ViewBag.CustomMsg))</div>
+
+        </div>
+    </div>
+
+</div>
+
+<div id='moreModal' class='modal' role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div id='moreModalContent'></div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var popup = @Session["PopupMsg"];
+            if (popup == 0) {
+                $("#CustomMsg").modal('show');
+            }
+        });
+
+          $('.anchorMore').click(function (e) {
+
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ViewPackageDetail", "Specials", new { area = "Reserv" })',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id },
+                    datatype: "json",
+                    success: function (data) {
+
+                        $('#moreModalContent').html(data);
+
+                        $('#moreModal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            });
+    </script>
+}
