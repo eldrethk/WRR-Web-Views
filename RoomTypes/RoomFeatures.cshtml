@@ -1,0 +1,108 @@
+﻿@model IEnumerable<WRR.Data.Models.RoomType.RoomFeatures>
+
+@{
+    ViewBag.Title = "RoomFeatures";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Room Features</h2>
+<hr />
+<div class="row">
+    <div class="col-md-5">
+        <p class="text-primary h2 m-3">
+            @ViewBag.RoomName
+            <span><button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@ViewBag.RoomTypeID'>Add Features</button></span>
+        </p>
+
+
+        <div id='addModal' class='modal' role="dialog" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div id='addModalContent'></div>
+                </div>
+            </div>
+
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @if (Enumerable.Count(Model) > 0)
+        {
+            <table class="table table-responsive-sm">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Icon)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.Features)</th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    var icon = "&#x" + item.Icon + ";";
+                    <tr>
+                        <td><i class="fa fa-2x">@Html.Raw(icon)</i></td>
+                        <td class="py-3">@Html.DisplayFor(modelitem => item.Features)</td>
+                        <td>@Html.ActionLink("Delete", "DeleteFeature", "RoomTypes", new { id = item.ID, roomid = item.RoomTypeID }, new { onclick = "return confirm('Are you sure you want to delete');" })</td>
+                    </tr>
+
+                }
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning">No Results</div>
+        }
+
+        <p>
+            @Html.ActionLink("Back to Room List", "Index", "RoomTypes")
+        </p>
+
+    </div>
+    <div class="col-md-7">
+        <div class="alert-secondary p-5">
+            <h2>How to add Icons for Room Features</h2>
+            <p>Step 1: Click on this link <a href="https://fontawesome.com/icons?m=free" target="_blank">Awesome Icon</a></p>
+            <p>Step 2: Enter type of icon in the search box</p>
+            <p><img src="~/Content/awesome-steps/awesome-step1.png" class="img-fluid" /></p>
+            <p>Step 3: Click on Icon you want to use</p>
+            <p><img src="~/Content/awesome-steps/awesome-step2.png" class="img-fluid"/></p>
+            <p>Step 4: Click on the unicode for the icon to copy</p>
+            <p><img src="~/Content/awesome-steps/awesome-step3.png" class="img-fluid" /></p>
+            <p>Step 5: Paste (Ctrl + V) in the icon textbox and enter the label for the features</p>
+            <p><img src="~/Content/awesome-steps/awesome-step4.png" class="img-fluid" /></p>
+            <p>Step 6: Click Add</p>
+        </div>
+       
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        var AddRatePostBackURL = '/RoomTypes/OpenModal';
+
+        $('.anchorAdd').click(function (e) {
+            e.preventDefault();
+            var $buttonClicked = $(this);
+            var id = $buttonClicked.attr('data-id');
+
+            $.ajax({
+                type: "GET",
+                url: AddRatePostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": id },
+                datatype: "json",
+                success: function (data) {
+                    $('#addModalContent').html(data);
+
+                    $('#addModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        });
+    </script>
+}
+

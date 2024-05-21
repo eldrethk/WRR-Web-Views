@@ -1,0 +1,178 @@
+﻿@model IEnumerable<WRR.Models.RackRackViewModel>
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rack Rates</h2>
+<hr />
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@foreach (var room in Model)
+{
+    <div class="mb-4">
+        <p class="h2 p-2 text-primary">
+            @Html.DisplayFor(roomitem => room.RoomType.Name)
+            @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+            {
+            <button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@room.RoomType.RoomTypeID'>Add Rates</button>
+            if (room.RackRates.Count > 0)
+            {
+                @Html.ActionLink("Edit All Rates", "EditAll", new { @id = room.RoomType.RoomTypeID }, htmlAttributes: new { @class = "btn btn-secondary" })
+            }
+            }
+        </p>
+        @if (room.RackRates.Count > 0)
+        {
+            <table class="table table-responsive-sm">
+                <tr>
+                    <th>
+                        Start Date
+                    </th>
+                    <th>
+                        End Date
+                    </th>
+
+                    <th>
+                        Tier A
+                    </th>
+                    <th>
+                        Tier B
+                    </th>
+                    <th>
+                        Tier C
+                    </th>
+                    <th>Tier D</th>
+                    <th></th>
+                </tr>
+                @foreach (var rate in room.RackRates)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(item => rate.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(item => rate.EndDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(item => rate.TierARate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(item => rate.TierBRate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(item => rate.TierCRate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(item => rate.TierDRate)
+                        </td>
+                        <td>
+                            @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                            {
+                                @Html.ActionLink("Edit", null, null, new { @class = "btnEdit", data_id = rate.RackRateID }) <span>|</span>
+                                @Html.ActionLink("Delete", "Delete", new { id = rate.RackRateID, roomid = 0, roomName=room.RoomType.Name, start = rate.StartDate, end = rate.EndDate }, new { onclick = "return confirm('Are you sure you want to delete?');" })
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+
+        }
+        else
+        {
+            <div class="alert alert-warning">No Results</div>
+        }
+    </div>
+}
+
+    <p>
+        <div class="col-auto my-auto">
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    </p>
+
+<div id='addModal' class='modal' role="dialog" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='addModalContent'></div>
+        </div>
+    </div>
+
+</div>
+<div id='editModal' class='modal' role="dialog" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='editModalContent'></div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+
+        var AddRatePostBackURL = '/RoomRackRate/AddRate';
+        var EditRatePostBackURL = '/RoomRackRate/EditRate';
+
+        $(function () {
+            $('.btnEdit').click(function (e) {
+                
+                e.preventDefault();
+                var $btnClicked = $(this);
+                var rackid = $btnClicked.attr('data-id');
+              
+                $.ajax({
+                    type: "GET",
+                    url: EditRatePostBackURL,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": rackid, "Page" : "all" },
+                    datatype: "json",
+                    success: function (data) {
+                        $('#editModalContent').html(data);
+
+                        $('#editModal').modal('show');
+                       
+                    },
+                    error: function () {
+                        alert("Content failed to load");
+                    }
+                });
+
+            });
+            $('.anchorAdd').click(function (e) {
+                e.preventDefault();
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+              
+                $.ajax({
+                    type: "GET",
+                    url: AddRatePostBackURL,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id , "Page" : "all" },
+                    datatype: "json",
+                    success: function (data) {
+
+                        $('#addModalContent').html(data);
+
+                        $('#addModal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            });
+            //$("#closebtn").on('click',function(){
+            //    $('#myModal').modal('hide');
+
+
+        });
+    </script>
+}
+
+

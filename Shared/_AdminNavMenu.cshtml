@@ -1,0 +1,277 @@
+﻿ <!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <!-- Sidebar - Brand -->
+
+    <img src="~/Content/images/WeRentRoomsLogo.jpg" class="img-fluid" />
+    <hr class="sidebar-divider">
+    @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel") || User.IsInRole("FrontDesk"))
+    {
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" href="@Url.Action("Dashboard", "Home",  new { Area = "" })">
+                <i class="fas fa-concierge-bell"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseReport">
+                <i class="fas fa-folder"></i>
+                <span>Reports</span>
+            </a>
+            <div id="collapseReport" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Reservations", "Index", "Report", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Summary", "Summary", "Report", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Add-ons", "Report", "ExtraAmenity", new { Area = "" }, new { @class = "collapse-item" })
+                </div>
+            </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAccommodations">
+                <i class="fas fa-bed"></i>
+                <span>Accommodations</span>
+            </a>
+            <div id="collapseAccommodations" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Room Types", "Index", "RoomTypes", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Allocations", "Index", "RoomAllocation", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Stay Restrictions", "Index", "StayRestrictions", new { Area = "" }, new { @class = "collapse-item" })
+                </div>
+            </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseRates">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Rack Rate</span>
+            </a>
+            <div id="collapseRates" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Edit/View", "Index", "RoomRackRate", new { Area = "" }, new { @class = "collapse-item" })
+                    @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                    {
+                        @Html.ActionLink("Date Ranges", "DateRange", "RoomRackRate", new { Area = "" }, new { @class = "collapse-item" })
+                    }
+                </div>
+            </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTier">
+                <i class="fas fa-layer-group"></i>
+                <span>Tier Level</span>
+            </a>
+            <div id="collapseTier" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Room Tier", "Index", "TierLevel", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Package Tier", "PackageTier", "TierLevel", new { Area = "" }, new { @class = "collapse-item" })
+                </div>
+            </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePackage">
+                <i class="fas fa-tags"></i>
+                <span>Packages</span>
+            </a>
+            <div id="collapsePackage" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Add/Edit/View", "Index", "Packages", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Tier Level", "PackageTier", "TierLevel", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Rates", "Index", "PackageRackRate", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Allocations", "Index", "PackageAllocation", new { Area = "" }, new { @class = "collapse-item" })
+                </div>
+            </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAddon">
+                <i class="fas fa-spa"></i>
+                <span>Add-ons</span>
+            </a>
+            <div id="collapseAddon" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Add/Edit/View", "Index", "ExtraAmenity", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Report", "Report", "ExtraAmenity", new { Area = "" }, new { @class = "collapse-item" })
+                </div>
+            </div>
+        </li>
+
+
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSystem">
+                <i class="fas fa-key"></i>
+                <span>System Options</span>
+            </a>
+            <div id="collapseSystem" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                    {
+                        @Html.ActionLink("Extra Fees", "SystemOptions", "Hotel", new { Area = "" }, new { @class = "collapse-item" })
+                        @Html.ActionLink("Disclaimer", "Disclaimer", "Hotel", new { Area = "" }, new { @class = "collapse-item" })
+                        @Html.ActionLink("Hotel Information", "Index", "Hotel", new { Area = "" }, new { @class = "collapse-item" })
+                        @Html.ActionLink("User Management", "ManageUsers", "Accounts", new { Area = "" }, new { @class = "collapse-item" })
+                        @Html.ActionLink("Opt-In Newsletter", "Index", "Marketing", new { Area = "" }, new { @class = "collapse-item" })
+                    }
+                    @Html.ActionLink("Custom Message", "Index", "CustomMessage", new { Area = "" }, new { @class = "collapse-item" })
+
+                </div>
+            </div>
+        </li>
+    }
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+    @if (User.IsInRole("WRRAdmin"))
+    {
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            WRR Admin
+        </div>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings">
+                <i class="fas fa-shield-alt"></i>
+                <span>System Settings</span>
+            </a>
+            <div id="collapseSettings" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Payment Types", "PaymentType", "Hotel", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Manage User", "CurrentUser", "Accounts", new { Area = "" }, new { @class = "collapse-item" })
+                </div>
+            </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory">
+                <i class="fas fa-list"></i>
+                <span>Maintenance Categories</span>
+            </a>
+            <div id="collapseCategory" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Guest Room", "GuestRoom", "Category", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Exterior", "Exterior", "Category", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Corridor", "Corridor", "Category", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Banquet Room", "Banquet", "Category", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Lobby/Front Desk", "Lobby", "Category", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+
+                </div>
+            </div>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseStyle">
+                <i class="fas fa-file-code"></i>
+                <span>Hotel's Style Layout</span>
+            </a>
+            <div id="collapseStyle" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Stylesheet", "HotelCSS", "HotelLayout", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Layout Images", "LayoutImages", "HotelLayout", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Header Layout", "Index", "HotelLayout", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Footer Layout", "Footer", "HotelLayout", new { Area = "" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Email Images", "Email", "HotelLayout", new { Area = "" }, new { @class = "collapse-item" })
+                </div>
+            </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMobileApp">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Mobile Apps</span>
+            </a>
+            <div id="collapseMobileApp" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Hotel Events", "Index", "HotelEvents", new { Area = "" }, new { @class = "collapse-item" })
+
+                </div>
+            </div>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+
+
+    }
+    @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel") || User.IsInRole("Maintenance") || User.IsInRole("FrontDesk"))
+    {
+        <div class="sidebar-heading">
+            WRR Maintenance
+        </div>
+        if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel") || User.IsInRole("Maintenance"))
+        {
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseRoomMaintenance">
+                    <i class="fas fa-building"></i>
+                    <span>Hotel Content</span>
+                </a>
+                <div id="collapseRoomMaintenance" class="collapse" data-bs-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        @Html.ActionLink("Buildings", "Index", "Buildings", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                        @Html.ActionLink("Rooms", "Index", "Room", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                        @Html.ActionLink("Banquet", "Index", "Banquet", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+
+                    </div>
+                </div>
+
+            </li>
+        }
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseHotelMaintenance">
+                <i class="fas fa-search"></i>
+                <span>Inspections</span>
+            </a>
+            <div id="collapseHotelMaintenance" class="collapse" data-bs-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    @Html.ActionLink("Guest Rooms", "Index", "RoomInspection", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Exterior", "Index", "ExteriorInspection", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Corridor", "Index", "CorridorInspection", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Lobby", "Index", "LobbyInspection", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+                    @Html.ActionLink("Banquet", "Index", "BanquetInspection", new { Area = "Maintenance" }, new { @class = "collapse-item" })
+
+                </div>
+            </div>
+
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+        <li class="nav-item active">
+            <a class="nav-link" href="@Url.Action("Index", "RoomComplaint", new { Area = "Maintenance" })">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Complaints</span>
+            </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+    }
+</ul>
+
+<!-- End of Sidebar -->

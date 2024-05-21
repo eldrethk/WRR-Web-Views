@@ -1,0 +1,31 @@
+﻿
+@model WRR.Models.RoomTypeViewModel
+
+<div class="form-row p-2">
+    <div class="">
+        @Html.LabelFor(m => m.AdultBaseFee.AdultBaseCount, htmlAttributes: new { @class = "control-label pr-2" })
+        @Html.DropDownListFor(m => m.AdultBaseFee.AdultBaseCount, Enumerable.Range(1, 15).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "number-select custom-select" })
+
+
+    </div>
+    <div class="">
+        @Html.LabelFor(m => m.AdultBaseFee.MaxAdults, htmlAttributes: new { @class = "control-label pr-2" })
+        @Html.DropDownListFor(m => m.AdultBaseFee.MaxAdults, Enumerable.Range(1, 15).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "number-select custom-select" })
+
+    </div>
+    <div class="">
+        @Html.LabelFor(m => m.AdultBaseFee.ChildBaseCount, htmlAttributes: new { @class = "control-label pr-2" })
+        @Html.DropDownListFor(m => m.AdultBaseFee.ChildBaseCount, Enumerable.Range(1, 15).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "number-select custom-select" })
+
+    </div>
+    <div class="">
+        @Html.LabelFor(m => m.AdultBaseFee.MaxChild, htmlAttributes: new { @class = "control-label pr-2" })
+        @Html.DropDownListFor(m => m.AdultBaseFee.MaxChild, Enumerable.Range(1, 15).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "number-select custom-select" })
+
+    </div>
+    <div class="">
+        @Html.LabelFor(m => m.AdultBaseFee.MaxRoomTotal, htmlAttributes: new { @class = "control-label pr-2" })
+        @Html.DropDownListFor(m => m.AdultBaseFee.MaxRoomTotal, Enumerable.Range(1, 15).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "number-select custom-select" })
+
+    </div>
+</div>

@@ -1,0 +1,17 @@
+﻿@model WRR.Models.RoomTypeViewModel
+
+
+<div class="form-row p-2">
+    <div class="">
+        @Html.LabelFor(m => m.MaxBaseFee.MaxBaseCount, htmlAttributes: new { @class = "control-label pr-2" })
+        @Html.DropDownListFor(m => m.MaxBaseFee.MaxBaseCount, Enumerable.Range(1, 15).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "number-select custom-select" })
+
+
+    </div>
+    <div class="">
+        @Html.LabelFor(m => m.MaxBaseFee.BaseCount, htmlAttributes: new { @class = "control-label pr-2" })
+        @Html.DropDownListFor(m => m.MaxBaseFee.BaseCount, Enumerable.Range(1, 15).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "number-select custom-select" })
+
+    </div>
+  
+</div>

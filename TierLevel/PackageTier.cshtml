@@ -1,0 +1,230 @@
+﻿@model WRR.Models.TierViewModel
+
+@{
+    ViewBag.Title = "Package Tier Level";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@section HeadScript{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.css">
+
+    <style type="text/css">
+
+        .field-validation-error {
+            color: #ff0000;
+        }
+
+        .fc-content {
+            color: #fff;
+            height: 40px;
+            text-align: center;
+            font-size: 24px;
+        }
+    </style>
+
+}
+
+<h2>Package Tier Level</h2>
+<hr />
+
+<div class="form-row">
+    <div class="col-md-3">
+        @using (Html.BeginForm("PackageTier", "TierLevel", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken();
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.Label("Packages", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-12">
+                        @Html.DropDownListFor(model => model.SelectedID, new SelectList(Model.Packages, "PackageID", "Name"), "--Select Package--", htmlAttributes: new { @class = "custom-select" })
+                        @Html.ValidationMessageFor(model => model.SelectedID, "", new { @class = "text-danger" })<br />
+                        <button type="button" id="btnGet" class="btn btn-primary mt-4">View Calendar</button>
+                    </div>
+                </div>
+                @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                            @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.Label("Tier Level", htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-12">
+                            @Html.DropDownListFor(model => model.TierLevel, new List<SelectListItem> {
+                                new SelectListItem{Text = "A", Value = "a"},
+                                new SelectListItem{Text = "B", Value = "b"},
+                                new SelectListItem{Text = "C", Value = "c"},
+                                new SelectListItem{Text = "D", Value = "d"}
+                             }, "--Select--", htmlAttributes: new { @class = "custom-select" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.TierLevel, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-padding-left">
+                        <input type="submit" value="Save Tier Levels" class="btn btn-success" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="col-md-9">
+        @Html.Partial("_fullcalendar")
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/fullcalendarjs")
+
+    <script>
+        $(document).on('submit', 'form', function () {
+            displayBusyIndicator();
+        });
+
+        function displayBusyIndicator() {
+            $('.loading').show();
+        }
+    </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.date-picker').datepicker();
+            var selectedEvent = null;
+            //GenerateCalendar();
+            @if(ViewBag.JavaScriptFunction != null)
+            {
+                @Html.Raw(ViewBag.JavaScriptFunction)
+            }
+
+            $('#btnGet').click(function () {
+                var packageid = $("#SelectedID").val();
+                FetchEvent(packageid);
+                //GenerateCalendar();
+            })
+
+            function FetchEvent(packageid) {
+                        events = [];
+                $.ajax({
+                    type: 'Get',
+                    url: '@Url.Action("SetPackageID", "TierLevel")',
+                    data: { id: packageid },
+                    success: function (result) {
+
+                        $('#PackageName').text(result);
+                        $('#warning').removeClass('no-display');
+
+                        var admin = '@User.IsInRole("WRRAdmin")';
+                        var hotel = '@User.IsInRole("Hotel")';
+
+                        if (admin == "True" || hotel == "True") {
+                            GenerateAdminCalendar(packageid);
+                        }
+                        else {
+                            GenerateCalendar(packageid);
+                        }
+                    }
+
+                })
+            }
+
+            function GenerateAdminCalendar(packageid) {
+                var link = '@Url.Action("GetPackageTiers", "TierLevel")?packageid=' + packageid;
+                $('#calendar').fullCalendar('destroy');
+                $('#calendar').fullCalendar({
+                    defaultView: 'month',
+                    firstDay: 0,
+                    contentHeight: 500,
+                    selectable: true,
+                    header: {
+                            left: 'prev,next',
+                        center: 'title',
+                        right: 'today'
+                    },
+                    firstDay: 0, //The day that each week begins (Monday=1)
+                    slotMinutes: 60,
+
+                   //events: '@Url.RouteUrl(new { action = "GetPackageTiers", controller = "TierLevel" })',
+                    events : link,
+                    textColor: '#ffffff',
+                    eventClick: function (calEvent, jsEvent, view) {
+                            selectedEvent = calEvent;
+                        $('#myModal #eventTitle').text(calEvent.start.format("MM-DD-YYYY"));
+                        $('#myModal #tier').val(calEvent.title);
+                        $('#myModal #tierid').val(calEvent.eventID);
+                        $('#myModal').modal();
+                        }
+
+
+                    });
+            }
+
+
+            function GenerateCalendar(packageid) {
+                var link = '@Url.Action("GetPackageTiers", "TierLevel")?packageid=' + packageid;
+                $('#calendar').fullCalendar('destroy');
+                $('#calendar').fullCalendar({
+                    defaultView: 'month',
+                    firstDay: 0,
+                    contentHeight: 500,
+                    selectable: true,
+                    header: {
+                            left: 'prev,next',
+                        center: 'title',
+                        right: 'today'
+                    },
+                    firstDay: 0, //The day that each week begins (Monday=1)
+                    slotMinutes: 60,
+
+                   //events: '@Url.RouteUrl(new { action = "GetPackageTiers", controller = "TierLevel" })',
+                    events : link,
+                    textColor: '#ffffff'
+
+                    });
+                }
+            $('#btnSave').click(function () {
+                    //Validation/
+                    var data = {
+                    EventID: $('#tierid').val(),
+                    title: $('#myModal #tier').val(),
+                }
+                SaveEvent(data);
+
+            })
+
+            function SaveEvent(data) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SavePackageEvents", "TierLevel")',
+                    data: data,
+                    success: function (data) {
+                        if (data.status) {
+                            //refresh the calendar
+                            GenerateAdminCalendar();
+                            $('#myModal').modal('hide');
+                        }
+                    }
+                })
+             }
+
+    		});
+    </script>
+}
+
+

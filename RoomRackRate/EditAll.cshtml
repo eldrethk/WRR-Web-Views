@@ -1,0 +1,161 @@
+﻿@model WRR.Models.RackRackViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rack Rates</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h2 class="text-primary">@Html.DisplayFor(model => model.RoomType.Name)</h2>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.RoomType.RoomTypeID)
+        <div class="form-group">
+            <table id="tblrates" class="table table-responsive-sm table-secondary table-bordered">
+
+                <tr>
+                    <th>
+                        Start Date
+                    </th>
+                    <th>
+                        End Date
+                    </th>
+
+                    <th>
+                        Tier A
+                    </th>
+                    <th>
+                        Tier B
+                    </th>
+                    <th>
+                        Tier C
+                    </th>
+                    <th>Tier D</th>
+                </tr>
+                <tbody>
+                    @foreach (var item in Model.RackRates)
+                    {
+
+                        <tr>
+                            <td>
+                                @Html.EditorFor(modelItem => item.StartDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                                @Html.ValidationMessageFor(modelItem => item.StartDate, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(modelItem => item.EndDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                                @Html.ValidationMessageFor(modelItem => item.EndDate, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(modelItem => item.TierARate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(modelItem => item.TierARate, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(modelItem => item.TierBRate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(modelItem => item.TierBRate, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(modelItem => item.TierCRate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(modelItem => item.TierCRate, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.EditorFor(modelItem => item.TierDRate, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(modelItem => item.TierDRate, "", new { @class = "text-danger" })
+                            </td>
+                            <td class="no-display">
+                                @Html.HiddenFor(modelItem => item.RackRateID)
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+
+        <div class="row m-2 justify-content-center" style="max-width:80%;">
+            <div class="form-row">
+                <div class="col-auto">
+                    <button id="btnSubmit" type="button" value="Save" class="btn btn-primary btn-lg">Save</button>
+                </div>
+                <div class="col-auto my-auto">
+                    @Html.ActionLink("Back to List", "Index")
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+
+        $(function () {
+            $('.date-picker').datepicker();
+
+
+        });
+
+        function getallData() {
+
+            var data = [];
+            var roomid = $('#RoomType_RoomTypeID').val();
+            $('#tblrates tbody tr').each(function () {
+                var start = $(this).find('#item_StartDate').val();
+                var end = $(this).find('#item_EndDate').val();
+                var tiera = $(this).find('#item_TierARate').val();
+                var tierb = $(this).find('#item_TierBRate').val();
+                var tierc = $(this).find('#item_TierCRate').val();
+                var tierd = $(this).find('#item_TierDRate').val();
+                var rackrateid = $(this).find('#item_RackRateID').val();
+
+                var alldata = {
+                    'StartDate': start,
+                    'EndDate': end,
+                    'TierARate': tiera,
+                    'TierBRate': tierb,
+                    'TierCRate': tierc,
+                    'TierDRate': tierd,
+                    'RackRateID': rackrateid,
+                    'RoomTypeID': roomid,
+                }
+                data.push(alldata);
+        });
+        return data;
+        }
+
+        $('#btnSubmit').click(function () {
+
+            var data = JSON.stringify(getallData());
+
+            $.ajax({
+                url: '/RoomRackRate/Save',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ 'getdata': data }),
+                success: function (result) {
+                    window.location.href = "/RoomRackRate/Details/" + result;
+
+                },
+                error: function () {
+                    alert("Error with saving rack rates");
+                }
+            })
+        });
+    </script>
+}
+

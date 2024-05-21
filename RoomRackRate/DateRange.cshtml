@@ -1,0 +1,68 @@
+﻿@model WRR.Models.DateRangeViewModel
+
+@{
+    ViewBag.Title = "DateRange";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Date Range</h2>
+
+
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <p class="text-danger form-padding-left font-weight-bold">@Html.Raw(HttpUtility.HtmlDecode(Model.Message))</p>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label pb-2">Room Types:</div>
+            <div class="col-md-6">
+                @Html.DropDownListFor(model => model.SelectedRoomTypeID, new SelectList(Model.HotelRooms, "Value", "Text"), "--Select Room--", htmlAttributes: new { @class = "custom-select" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-4 " })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group form-padding-left" style="max-width:80%;">
+            <div class="form-row">
+                <div class="col-auto">
+                    <input type="submit" value="Save" class="btn btn-success btn-lg" />
+                </div>
+                <div class="col-auto my-auto">
+                    @Html.ActionLink("Back to List", "Index")
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            $('.date-picker').datepicker();
+
+        });
+    </script>
+}

@@ -1,0 +1,109 @@
+﻿@model WRR.Models.RoomTypeViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Room Type</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.RoomType.RoomTypeID)
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.RoomType.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.RoomType.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.RoomType.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.RoomType.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.RoomType.Description, new { htmlAttributes = new { @class = "form-control", @rows = 10 } })
+            @Html.ValidationMessageFor(model => model.RoomType.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.RoomType.BedType, htmlAttributes: new { @class = "control-label" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.RoomType.BedType, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.RoomType.BedType, "", new { @class = "text-danger" })
+        </div>
+    </div>
+   
+    <div class="form-group">
+        <div class="col-md-4 control-label">Extra Person Fee Type:</div>
+    </div>
+
+    @{
+        bool adultCheck = Model.RoomType.AdultBase;
+        bool maxCheck = Model.RoomType.MaxBase;
+
+    }
+
+
+    <div class="form-group form-padding-left">
+        <div class="custom-control custom-switch">
+            @Html.RadioButton("BaseFeeType", "Adult", adultCheck, new { onclick = "showExtraPersonFeeContainer(this)", @class = "custom-control-input", @id = "adult" })
+            @Html.LabelFor(model => model.RoomType.AdultBase, htmlAttributes: new { @class = "custom-control-label", @for = "adult" })
+        </div>
+        <div class="custom-control custom-switch">
+            @Html.RadioButton("BaseFeeType", "Max", maxCheck, new { onclick = "showExtraPersonFeeContainer(this)", @class = "custom-control-input", @id = "max" })
+            @Html.LabelFor(model => model.RoomType.MaxBase, htmlAttributes: new { @class = "custom-control-label", @for = "max" })
+        </div>
+    </div>
+
+    <div id="AdultContainer" class='@(adultCheck == true ? "show-display" : "no-display")'>
+        @Html.Partial("_AdultBase", Model)
+    </div>
+
+    <div id="MaxContainer" class='@(maxCheck == true ? "show-display" : "no-display")'>
+        @Html.Partial("_MaxBase", Model)
+    </div>
+
+    <div class="row m-2 justify-content-center" style="max-width:80%;">
+        <div class="form-row">
+            <div class="col-auto">
+                <input type="submit" value="Save" class="btn btn-primary btn-lg" />
+            </div>
+            <div class="col-auto my-auto">
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/customscripts")
+    <script type="text/javascript">
+
+        function showExtraPersonFeeContainer(PkType) {
+            debugger;
+            var selected = PkType.value;
+            if (selected == "Adult") {
+                $("#AdultContainer").removeClass("no-display").addClass("show-display");
+                $("#MaxContainer").removeClass("show-display").addClass("no-display");
+            }
+            else if (selected == "Max") {
+                $("#MaxContainer").removeClass("no-display").addClass("show-display");
+                $("#AdultContainer").removeClass("show-display").addClass("no-display");
+            }
+          
+        };
+        </script>
+}

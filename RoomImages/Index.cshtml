@@ -1,0 +1,79 @@
+﻿@model IEnumerable<WRR.Data.Models.RoomType.RoomImage>
+
+@using WRR.Extensions
+
+
+<h1>Room Images</h1>
+<hr />
+@{
+    var roomid = ViewData["RoomTypeID"];
+    <h2 class="text-info">@ViewData["RoomTypeName"]</h2>
+}
+
+@if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+{
+<p>
+    @Html.ActionLink("Upload Photos", "Create", new { @roomid = roomid }, htmlAttributes: new { @class = "btn btn-success btn-lg" })
+</p>
+}
+@if (Enumerable.Count(Model) > 0)
+{
+    <table class="table table-responsive-sm">
+        <tr>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.MainImage)
+            </th>
+            <th>Image</th>
+            <th>
+                @Html.DisplayNameFor(model => model.FileName)
+            </th>
+
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">
+                    @{
+                        if (item.MainImage == true)
+                        {
+                            <i class="fas fa-check fa-2x text-success"></i>
+                        }
+                    }
+
+                </td>
+                <td>
+                    @Html.Image("RoomImage", String.Format("/Content/room-images/{0}", item.FileName.ToString()), item.FileName, "100", "100")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FileName)
+                </td>
+
+                <td>
+                    @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                    {
+                        
+                            if (item.MainImage == false)
+                            {
+                                @Html.ActionLink("Set as Main Image", "SetMain", new { id = item.ImageID, roomid = item.RoomTypeID }, new { @class = "text-danger" })
+                                <span>|</span>
+                            }
+                        
+
+
+                        @Html.ActionLink("Delete", "Delete", new { id = item.ImageID }, new { onclick = "return confirm('Are you sure you want to delete?');" })
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No Results</div>
+}
+<p>
+    @Html.ActionLink("Back to Room List", "Index", "RoomTypes")
+</p>

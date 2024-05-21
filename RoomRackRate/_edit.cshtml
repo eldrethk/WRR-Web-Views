@@ -1,0 +1,71 @@
+﻿@model WRR.Models.RackRackViewModel
+
+@using (Html.BeginForm("Edit", "RoomRackRate", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-header">
+        <h2 class="modal-title text-primary form-padding-left">  @Html.DisplayFor(model => model.RoomType.Name)</h2>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    @Html.HiddenFor(model => model.RoomType.RoomTypeID)
+    @Html.HiddenFor(model => model.SingleRate.RackRateID)
+    @Html.HiddenFor(model => model.Page)
+    <div class="modal-body">
+        <div class="form-group">
+            @Html.LabelFor(model => model.SingleRate.StartDate, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SingleRate.StartDate, new { htmlAttributes = new { @class = "date-picker form-control", @autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.SingleRate.StartDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SingleRate.EndDate, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SingleRate.EndDate, new { htmlAttributes = new { @class = "date-picker form-control", @autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.SingleRate.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SingleRate.TierARate, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SingleRate.TierARate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SingleRate.TierARate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SingleRate.TierBRate, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SingleRate.TierBRate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SingleRate.TierBRate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SingleRate.TierCRate, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SingleRate.TierCRate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SingleRate.TierCRate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SingleRate.TierDRate, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SingleRate.TierDRate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SingleRate.TierDRate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-success" value="Save">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+}
+<script type="text/javascript">
+        $.validator.unobtrusive.parse(document);
+        $(document).ready(function () {
+            $('.date-picker').datepicker();
+
+        });
+</script>

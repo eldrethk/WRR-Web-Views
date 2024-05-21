@@ -1,0 +1,38 @@
+﻿@model WRR.Data.Models.RoomType.RoomImage
+
+@using WRR.Extensions
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+   
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.Image("RoomImage", String.Format("/Content/room-images/{0}", Model.FileName), " " , "300", "300")<br/><br/>
+        </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.FileName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FileName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-primary btn-lg" /> |
+            @Html.ActionLink("Back to List", "Index", new { id = Model.RoomTypeID})
+        </div>
+    }
+</div>
