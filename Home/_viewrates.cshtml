@@ -1,0 +1,93 @@
+﻿@model WRR.Areas.Reserv.Models.RackRatesViewModel
+
+
+
+
+                <div class="modal-header">
+                    <h2 class="modal-title h3 form-padding-left">@Html.DisplayFor(model => model.RoomType.Name)</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-primary">Standard Rates</h4>
+                    @if (Model.ViewRate == "Basic")
+                    {
+                        <table class="table table-striped">
+                            <tr>
+                                <td class="pl-4"><strong>Deposit:</strong></td>
+                                <td>$@Html.DisplayFor(model => model.Deposit)</td>
+                            </tr>
+                            <tr>
+                                <td class="pl-4"><strong>SubTotal:</strong></td>
+                                <td> $@Html.DisplayFor(model => model.SubTotal)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #999;">
+
+                                <td class="pl-4"><strong>Taxes:</strong></td>
+                                <td>$@Html.DisplayFor(model => model.ExtraFees)</td>
+                            </tr>
+                            <tr>
+                                <td class="pl-4"><strong>Total: </strong></td>
+                                <td>$@Html.DisplayFor(model => model.Total)</td>
+                            </tr>
+
+                        </table>
+                    }
+                    else
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <td>Date</td>
+                                    <td>Rate</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 0;
+                                    foreach (var daily in Model.RackRatesDates)
+                                    {
+                                        <tr>
+                                            <td>@Convert.ToDateTime(daily.Date).ToString("dddd, MMM-dd-yyyy")</td>
+                                            <td>$@Html.DisplayFor(item => Model.Rates[i])</td>
+                                        </tr>
+                                        i++;
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                        <div class="float-right">
+                            <table style="width: 260px;">
+                                <tr>
+                                    <td class="pl-4"><strong>Deposit:</strong></td>
+                                    <td class="text-right pr-4">$@Html.DisplayFor(model => model.Deposit)</td>
+                                </tr>
+                                <tr>
+                                    <td class="pl-4"><strong>SubTotal:</strong></td>
+                                    <td class="text-right pr-4"> $@Html.DisplayFor(model => model.SubTotal)</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #999;">
+
+                                    <td class="pl-4"><strong>Taxes:</strong></td>
+                                    <td class="text-right pr-4">$@Html.DisplayFor(model => model.ExtraFees)</td>
+                                </tr>
+                                <tr>
+                                    <td class="pl-4"><strong>Total: </strong></td>
+                                    <td class="text-right pr-4">$@Html.DisplayFor(model => model.Total)</td>
+                                </tr>
+
+                            </table>
+
+                        </div>
+                    }
+                   
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+
+
+

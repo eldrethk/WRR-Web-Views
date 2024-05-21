@@ -1,0 +1,744 @@
+﻿@model WRR.Areas.Reserv.Models.AddOnViewModel
+@using WRR.Extensions
+@{
+    ViewBag.Title = "Packages";
+    Layout = "~/Areas/Reserv/Views/Shared/_ReservLayout.cshtml";
+}
+
+
+
+@Html.HiddenFor(model => model.RoomTypeID)
+
+<div class="container rounded my-4 bg-gray-200 p-3">
+    <div class="row rounded bg-white py-2 my-4 mx-2 round-border">
+        <div class="col-sm-4 h5 text-center pt-2"><i class="fas fa-calendar-alt text-secondary d-none d-md-inline-block"></i> @Convert.ToDateTime(Model.ArrivalDate).ToString("ddd, MMM dd") - @Convert.ToDateTime(Model.DepartureDate).ToString("ddd, MMM dd")</div>
+        <div class="col-sm-4 h5 text-center pt-2"><i class="fas fa-user text-secondary ml-3 mr-2 d-none d-md-inline-block"></i>@Html.DisplayFor(model => model.Adults) Adults <span class="d-md-none d-sm-inline mr-1">/</span><i class="fas fa-child text-secondary ml-2 mr-2 d-none d-md-inline-block"></i>@Html.DisplayFor(model => model.Children) Children</div>
+        <div class="col-sm-4">
+            <p class="text-right">@Html.ActionLink("Edit Itinerary", "Index", "Home", new { @id = Model.Hotel.HotelID }, null)</p>
+        </div>
+    </div>
+  
+    <div class="row p-2 my-4 mx-2">
+        <div class="col-md-8">
+            <h2>Add-Ons</h2>
+            <div class="text-center">@Html.ValidationSummary(true, "", new { @class = "text-danger" })</div>
+        </div>
+        <div class="col-md-4">
+            <div class="row h-100">
+                <div class="col bg-white rounded p-3 h-100 round-border">
+                    @{
+                        decimal totalcost = 0;
+                        decimal amenitycost = 0;
+                        decimal amentiytax = 0;
+                        if (Model.CartAmenities != null)
+                        {
+                            <div id="cartModal" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2 class="modal-title h3 form-padding-left text-primary">Add-on Cart</h2>
+                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="w-100 table table-striped">
+                                                @foreach (var cart in Model.CartAmenities)
+                                                {
+                                                    amenitycost += cart.Fee;
+                                                    amentiytax += cart.Tax;
+                                                    totalcost = amenitycost + amentiytax;
+                                                    foreach (var ea in Model.AvailableAmenities.FindAll(y => y.AmenityID == cart.ExtraAmenityID))
+                                                    {
+
+                                                        <tr>
+                                                            <td colspan="4"><h5>@ea.Name</h5></td>
+                                                        </tr>
+
+                                                        <tr>
+
+                                                            @if (ea.OneTimeFee == true || ea.PerNightStay == true)
+                                                            {
+                                                                <td></td>
+                                                                <td>
+                                                                    @if (ea.PerNightStay == true && cart.NumOfPeople > 0)
+                                                                    {
+                                                                        <label>@cart.NumOfPeople.ToString() nights</label>
+                                                                    }
+                                                                </td>
+                                                                if (cart.Fee > 0)
+                                                                {
+                                                                    <td><label>@string.Format("{0:C}", (cart.Fee + cart.Tax))</label></td>
+                                                                    <td><button type="button" class="anchoronetime btn p-0" data-icon="true" data-id="@cart.ExtraAmenityID" data-status="delete"><i class="fa fa-trash text-secondary"></i></button></td>
+                                                                }
+                                                                else if (cart.Mandatory == true)
+                                                                {
+                                                                    <td colspan="2" class="text-right"><span class="text-success">(Included)</span></td>
+                                                                }
+                                                               
+
+
+                                                            }
+                                                            else if (ea.PerDay == true)
+                                                            {
+                                                                <td>@cart.Days.ToString("ddd, MMM, d") </td>
+                                                                <td></td>
+                                                                <td>
+                                                                    @if (cart.Fee > 0)
+                                                                    {
+                                                                        <label>@string.Format("{0:C}", (cart.Fee + cart.Tax))</label>
+                                                                    }
+                                                                    else if (cart.Mandatory == true)
+                                                                    {
+                                                                        <span class="text-success">(Included)</span>
+                                                                    }
+                                                                </td>
+                                                                <td><button type="button" class="anchorperday btn p-0" data-id="@cart.ExtraAmenityID" data-packageid="@Model.PackageID" data-status="delete" data-day="@cart.Days"><i class="fa fa-trash text-secondary"></i></button></td>
+                                                                
+                                                            }
+                                                            else if (ea.OneTimeFeePerson == true)
+                                                            {
+                                                                <td></td>
+                                                                <td>
+                                                                    @if (cart.NumOfPeople > 0)
+                                                                    {
+                                                                        <label>Qty.x @cart.NumOfPeople.ToString()</label>
+                                                                    }
+                                                                </td>
+                                                                if (cart.Fee > 0)
+                                                                {
+                                                                    <td><label> @string.Format("{0:C}", (cart.Fee + cart.Tax))</label></td>
+                                                                    <td><button type="button" class="anchorperperson btn p-0" data-id="@cart.ExtraAmenityID" data-people="@cart.NumOfPeople" data-status="delete"><i class="fa fa-trash text-secondary"></i></button></td>
+                                                                }
+                                                                else if (cart.Mandatory == true)
+                                                                {
+                                                                    <td colspan="2" class="text-right"><span class="text-success">(Included)</span></td>
+                                                                }
+                                                              
+
+                                                            }
+                                                            else if (ea.PerDayPerPerson == true)
+                                                            {
+                                                                <td>@cart.Days.ToString("ddd, MMM, d")</td>
+                                                                <td>Qty. x @cart.NumOfPeople.ToString()</td>
+                                                                <td>
+                                                                    @if (cart.Fee > 0)
+                                                                    {
+                                                                        <label> @string.Format("{0:C}", (cart.Fee + cart.Tax))</label>
+                                                                    }
+                                                                    else if (cart.Mandatory == true)
+                                                                    {
+                                                                        <span class="text-success">(Included)</span>
+                                                                    }
+                                                                </td>
+                                                                <td><button type="button" class="anchorperdayperson btn p-0" data-id="@cart.ExtraAmenityID" data-status="delete" data-packageid="@Model.PackageID" data-day="@cart.Days" data-people="@cart.NumOfPeople"><i class="fa fa-trash text-secondary"></i></button></td>
+                                                              
+                                                            }
+                                                            else if (ea.Discount == true)
+                                                            {
+                                                                <td></td>
+                                                                <td>
+                                                                    @if (cart.NumOfPeople > 0)
+                                                                    {
+                                                                        <label>Qty. x @cart.NumOfPeople.ToString()</label>
+                                                                    }
+                                                                </td>
+                                                                if (cart.Fee > 0)
+                                                                {
+
+                                                                    <td><label> @string.Format("{0:C}", (cart.Fee + cart.Tax))</label></td>
+                                                                    <td><button type="button" class="anchordiscount btn p-0" data-id="@cart.ExtraAmenityID" data-status="delete" data-qty="@cart.NumOfPeople"><i class="fa fa-trash text-secondary"></i></button></td>
+                                                                }
+                                                                else if (cart.Mandatory == true)
+                                                                {
+
+                                                                    <td colspan="2" class="text-right"><span class="text-success">(Included)</span></td>
+                                                                }
+                                                               
+                                                            }
+                                                        </tr>
+
+                                                    }
+                                                }
+                                            </table>
+                                            <div class="float-right mb-5">
+                                                <table style="width: 240px;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="pl-4"><strong>SubTotal:</strong></td>
+                                                            <td class="text-right pr-2">@string.Format("{0:C}", amenitycost) </td>
+                                                        </tr>
+                                                        <tr style="border-bottom: 2px solid #999;">
+
+                                                            <td class="pl-4"><strong>Taxes:</strong></td>
+                                                            <td class="text-right pr-2">@string.Format("{0:C}", amentiytax)</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="pl-4"><strong>Total: </strong></td>
+                                                            <td class="text-right pr-2">@string.Format("{0:C}", totalcost)</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        }
+
+                        <p class="font-weight-bold w-100 h5 text-right">
+                            <span class="text-primary pr-3">Add-on Total</span> @string.Format("{0:C}", totalcost)  @if (Model.HasMandatoryAmenities == true || totalcost > 0)
+                            {<button id="btnShowCart" type="button" class="cartlink ml-2 ">(View Cart)</button>}
+                        </p>
+                        if (Model.HasMandatoryAmenities == true || (Model.CartAmenities != null && totalcost > 0))
+                        { <p class="my-3">@Html.ActionLink("Add & Continue", "PackageReservation", new { id = Model.Hotel.HotelID, roomid = Model.RoomTypeID, packageid = Model.PackageID, arrival = Model.ArrivalDate, departure = Model.DepartureDate, adult = Model.Adults, child = Model.Children }, new { @class = "btn btn-primary w-100" })</p>}
+                    if (Model.HasMandatoryAmenities == false)
+                    {
+                        <p class="my-3 text-center">@Html.ActionLink("Skip this step", "PackageNullReservation", new { id = Model.Hotel.HotelID, roomid = Model.RoomTypeID, packageid = Model.PackageID, arrival = Model.ArrivalDate, departure = Model.DepartureDate, adult = Model.Adults, child = Model.Children }, new { @class = "btn btn-secondary w-100" })</p>
+                    }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-2 my-4 mx-2">
+        @{
+            var itemcount = 0;
+            var totalpeople = Model.Adults + Model.Children;
+
+        }
+        @foreach (var amen in Model.AvailableAmenities)
+        {
+            var selected = false;
+
+            //dates for dropdowns based on the reservation dates
+            List<DateTime> availDates = new List<DateTime>();
+            for (DateTime temp = Model.ArrivalDate; temp <= Model.DepartureDate; temp = temp.AddDays(1))
+            {
+                availDates.Add(temp);
+            }
+            List<string> availDays = availDates.ConvertAll<string>(d => d.ToString("ddd, MMM, d"));
+
+
+            if (itemcount % 3 == 0 || itemcount % 3 == 3)
+            {
+                @Html.Raw("<div class='row mb-2'>")
+            }
+            if (Model.CartAmenities != null)
+            {
+                //checking if this amenity is already in cart
+                if (Model.CartAmenities.Exists(a => a.ExtraAmenityID == amen.AmenityID))
+                { selected = true; }
+                else
+                { selected = false; }
+            }
+
+            <div class="col-md-4 pb-3">
+                <div class="card rounded h-100 @(selected == true || amen.Mandatory == true ? "border-success" : "border-secondary")">
+                    
+                    @if (!(string.IsNullOrEmpty(amen.PictureUrl)))
+                    {
+                        <div class="card-header p-0">
+                            @Html.Image("AmenPic", String.Format("/Content/amenity-images/{0}", amen.PictureUrl), "", "width:100%;max-height:300px")
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card-header">
+                            <h3>@Html.DisplayFor(item => amen.Name)</h3>
+                        </div>
+                    }
+
+                        <div class="card-body">
+                            @if (!(string.IsNullOrEmpty(amen.PictureUrl)))
+                            {
+                                <h3>@Html.DisplayFor(item => amen.Name)</h3>
+                            }
+                            @Html.Raw(HttpUtility.HtmlDecode(amen.Description))
+                            @if (amen.Mandatory == false || (amen.Mandatory == true && amen.AdditionalPurchases == true) || (amen.Mandatory == true && amen.ViewRate == true))
+                            {
+                                if (amen.Discount == true)
+                                {
+                                    //add strike through discount prices
+                                    <p class="text-right h5 pt-3"><span style='color:red;text-decoration:line-through'><span style='color:black; padding-right:.5rem;'>$@Html.DisplayFor(item => amen.DiscountRegularRate)</span></span>$@Html.DisplayFor(item => amen.AmenityRate) <span class="small font-weight-light">/each</span></p>
+                                }
+                                else
+                                {
+                                    <p class="text-right h5 pt-3">
+                                        $@Html.DisplayFor(item => amen.AmenityRate)
+                                        @if (amen.OneTimeFeePerson == true)
+                                        {
+                                            <span class="small font-weight-light">/Per Person</span>
+                                        }
+                                        else if (amen.OneTimeFee == true)
+                                        {
+                                            <span class="small font-weight-light">/One Time Fee</span>
+                                        }
+                                        else if (amen.PerDayPerPerson == true)
+                                        {
+                                            <span class="small font-weight-light">/Per Day Per Person</span>
+                                        }
+                                        else if (amen.PerDay == true)
+                                        {
+                                            <span class="small font-weight-light">/Per Day</span>
+                                        }
+                                        else if (amen.PerNightStay == true)
+                                        {
+                                            <span class="small font-weight-light">/Per Night Stay</span>
+                                        }
+                                    </p>
+                                }
+                            }
+                            <hr />
+                            @if (amen.PerDay == true)
+                            {
+                                try
+                                {
+                                    foreach (var d in Model.CartAmenities.FindAll(x => x.ExtraAmenityID == amen.AmenityID))
+                                    {
+                                        <p>
+                                            @d.Days.ToString("ddd, MMM, d") <button type="button" class="anchorperday btn btn-secondary btn-sm ml-3" data-id="@d.ExtraAmenityID" data-packageid="@Model.PackageID" data-status="delete" data-day="@d.Days">Remove</button>
+                                            @if (d.Mandatory == true)
+                                            {<span class="text-success">(Included)</span>}
+                                        </p>
+
+                                    }
+                                }
+                                catch { }
+                                if (amen.Mandatory == true)
+                                {
+                                    <p class="text-success h5 text-right pt-2">Included</p>
+                                }
+
+                                if (availDays.Count > 0)
+                                {
+                                    if (selected == false || (amen.Mandatory == true && amen.AdditionalPurchases == true) || amen.Mandatory == false)
+                                    {
+                                        <p class="text-right">
+                                            @Html.DropDownList(string.Format("perday_{0}", amen.AmenityID), new SelectList(availDays), "--Select--", htmlAttributes: new { @class = "custom-select w-50" })
+                                            <button type="button" class="anchorperday btn btn-success" data-id="@amen.AmenityID" data-packageid="@Model.PackageID" data-status="add">Add</button>
+                                        </p>
+                                    }
+                                }
+
+                            }
+                            else if (amen.PerDayPerPerson == true)
+                            {
+                                try
+                                {
+                                    foreach (var d in Model.CartAmenities.FindAll(x => x.ExtraAmenityID == amen.AmenityID))
+                                    {
+                                        <p>
+                                            @d.Days.ToString("ddd, MMM, d") - (@d.NumOfPeople.ToString())<button type="button" class="anchorperdayperson btn btn-secondary btn-sm ml-3" data-id="@d.ExtraAmenityID" data-packageid="@Model.PackageID" data-people="@d.NumOfPeople" data-status="delete" data-day="@d.Days">Remove</button>
+                                            @if (d.Mandatory == true)
+                                            {<span class="text-success">(Included)</span>}
+                                        </p>
+                                    }
+                                }
+                                catch { }
+                                if (amen.Mandatory == true)
+                                {
+                                    <p class="text-success h5 text-right pt-2">
+                                        Includes  @if (amen.MandatoryQty > 0)
+                                        {<span>&#58;</span> <span class="text-dark">Qty @amen.MandatoryQty</span>}
+                                    </p>
+                                }
+
+                                if (availDays.Count > 0)
+                                {
+                                    if (selected == false || (amen.Mandatory == true && amen.AdditionalPurchases == true) || amen.Mandatory == false)
+                                    {
+                                        <p class="text-right">@Html.DropDownList(string.Format("day_{0}", amen.AmenityID), new SelectList(availDays), "--Select--", htmlAttributes: new { @class = "custom-select w-50" })</p>
+                                        <p class="text-right">@Html.DropDownList(string.Format("person_{0}", amen.AmenityID), Enumerable.Range(1, totalpeople).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), htmlAttributes: new { @class = "custom-select w-50" })</p>
+                                        <p class="text-right"><button type="button" class="anchorperdayperson btn btn-success" data-id="@amen.AmenityID" data-packageid="@Model.PackageID" data-status="add">Add</button></p>
+                                    }
+                                }
+
+
+
+                            }
+                            else if (amen.OneTimeFee == true)
+                            {
+                                if (amen.Mandatory == true)
+                                {
+                                    <p class="text-success h5 text-right pt-2">Included</p>
+                                }
+                                else
+                                {
+                                    if (selected == false)
+                                    {
+                                        <p class="text-right"><button type="button" class="anchoronetime btn btn-success" data-id="@amen.AmenityID" data-status="add">Add</button></p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-right"><button type="button" class="anchoronetime btn btn-secondary" data-id="@amen.AmenityID" data-status="delete">Remove</button></p>
+                                    }
+                                }
+                            }
+                            else if (amen.PerNightStay == true)
+                            {
+                                if (amen.Mandatory == true)
+                                {
+                                    <p class="text-success h5 text-right pt-2">Included</p>
+                                }
+                                else
+                                {
+                                    if (selected == false)
+                                    {
+                                        <p class="text-right"><button type="button" class="anchorpernight btn btn-success" data-id="@amen.AmenityID" data-status="add" data-start="@Model.ArrivalDate" data-end="@Model.DepartureDate">Add</button></p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-right"><button type="button" class="anchoronetime btn btn-secondary" data-id="@amen.AmenityID" data-status="delete">Remove</button></p>
+                                    }
+                                }
+                            }
+                            else if (amen.OneTimeFeePerson == true)
+                            {
+                                try
+                                {
+                                    foreach (var d in Model.CartAmenities.FindAll(x => x.ExtraAmenityID == amen.AmenityID && x.Mandatory == false))
+                                    {
+                                        <p>
+                                            Qty: @d.NumOfPeople <button type="button" class="anchorperperson btn btn-secondary btn-sm ml-3" data-id="@amen.AmenityID" data-people="@d.NumOfPeople" data-status="delete">Remove</button>
+                                        </p>
+                                    }
+                                }
+                                catch { }
+                                if (amen.Mandatory == true)
+                                {
+                                    <p class="text-success h5 text-right pt-2">
+                                        Includes @if (amen.MandatoryQty > 0)
+                                        {<span>&#58;</span> <span class="text-dark">Qty @amen.MandatoryQty</span>}
+                                    </p>
+                                }
+                                if (amen.Mandatory == false || (amen.Mandatory == true && amen.AdditionalPurchases == true))
+                                {
+                                    <p class="text-right">
+                                        @Html.DropDownList(string.Format("perperson_{0}", amen.AmenityID), Enumerable.Range(1, totalpeople).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), htmlAttributes: new { @class = "custom-select w-50" })
+                                        <button type="button" class="anchorperperson btn btn-success" data-id="@amen.AmenityID" data-status="add">Add</button>
+                                    </p>
+                                }
+
+
+                            }
+                            else if (amen.Discount == true)
+                            {
+                                try
+                                {
+                                    foreach (var d in Model.CartAmenities.FindAll(x => x.ExtraAmenityID == amen.AmenityID && x.Mandatory == false))
+                                    {
+                                        <p>
+                                            Qty: @d.NumOfPeople <button type="button" class="anchordiscount btn btn-secondary btn-sm ml-3" data-id="@amen.AmenityID" data-qty="@d.NumOfPeople" data-status="delete">Remove</button>
+                                        </p>
+                                    }
+                                }
+                                catch { }
+
+                                if (amen.Mandatory == true)
+                                {
+                                    <p class="text-success h5 text-right pt-2 align-text-bottom">
+                                        Included @if (amen.MandatoryQty > 0)
+                                        {<span class="text-dark">Qty: @amen.MandatoryQty</span>}
+                                    </p>
+                                }
+
+                                if (amen.Mandatory == false || (amen.Mandatory == true && amen.AdditionalPurchases == true))
+                                {
+                                    <p class="text-right">
+                                        @Html.DropDownList(string.Format("perperson_{0}", amen.AmenityID), Enumerable.Range(1, totalpeople).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), htmlAttributes: new { @class = "custom-select w-50" })
+                                        <button type="button" class="anchordiscount btn btn-success" data-id="@amen.AmenityID" data-status="add">Add</button>
+                                    </p>
+                                }
+                            }
+
+
+
+
+
+
+                        </div>
+                </div>
+            </div>
+
+            itemcount++;
+            if (itemcount % 3 == 0 || itemcount % 3 == 3)
+            {
+                @Html.Raw("</div>")
+            }
+        }
+    </div>
+</div>
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+
+            alert("@ViewBag.Message");
+    </script>
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        window.onload = function () {
+            var pop = this.sessionStorage.getItem("pop");
+            if (pop) {
+                sessionStorage.removeItem("pop");
+                showpopup();
+            }
+        }
+        function showpopup() {
+            $("#cartModal").modal('show');
+        }
+
+
+        $(function () {
+            $('#btnShowCart').click(function () {
+                showpopup();
+            });
+
+
+
+
+            $('.anchoronetime').click(function (e) {
+                e.preventDefault();
+                var $buttonclicked = $(this);
+                var id = $buttonclicked.attr('data-id');
+                var status = $buttonclicked.attr('data-status');
+                var pop = $buttonclicked.attr('data-icon');
+
+                if (pop == true) {
+                    sessionStorage.setItem("pop", "true");
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("OneTime", "AddOns", new { area = "Reserv"})',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "id": id, "status": status },
+                    datatype: "json",
+                    success: function (data) {
+
+                        location.reload(true);
+
+                    },
+                    error: function () {
+                        if (status == 'add') {
+                            alert("Sorry could not add this amenitity");
+                        }
+                        else {
+                            alert("Sorry, there's an error with this amenitity.");
+                        }
+                    }
+
+                });
+            });
+
+
+            $('.anchorpernight').click(function (e) {
+                e.preventDefault();
+                var $buttonclicked = $(this);
+                var id = $buttonclicked.attr('data-id');
+                var status = $buttonclicked.attr('data-status');
+                var start = Date.now();
+                var end = Date.now();
+
+                if (status == 'add') {
+                    start = $buttonclicked.attr('data-start');
+                    end = $buttonclicked.attr('data-end');
+                }
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("PerNightStay", "AddOns", new { area = "Reserv"})',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "id": id, "status": status, "start" : start, "end" : end },
+                    datatype: "json",
+                    success: function (data) {
+
+                        location.reload(true);
+
+                    },
+                    error: function () {
+                        if (status == 'add') {
+                            alert("Sorry could not add this amenitity");
+                        }
+                        else {
+                            alert("Sorry, there's an error with this amenitity.");
+                        }
+                    }
+
+                });
+            });
+
+            $('.anchorperperson').click(function (e) {
+                e.preventDefault();
+                var $buttonclicked = $(this);
+                var amenid = $buttonclicked.attr('data-id');
+                var status = $buttonclicked.attr('data-status');
+              
+                var num = 0;
+                if (status == 'delete')
+                {
+                    num = $buttonclicked.attr('data-people');
+                }
+                else {
+                    var x = $("select[name^='perperson_" + amenid + "']").val();
+                    if (x > 0) { num = x; }
+                }
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("PerPerson", "AddOns", new { area = "Reserv"})',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "id": amenid, "status": status, "num": num },
+                    datatype: "json",
+                    success: function (data) {
+
+                        location.reload(true);
+                    },
+                    error: function () {
+                        if (status == 'add') {
+                            alert("Sorry could not add this amenitity");
+                        }
+                        else {
+                            alert("Sorry, there's an error with this amenitity.");
+                        }
+                    }
+
+                });
+            });
+
+
+            $('.anchordiscount').click(function (e) {
+                e.preventDefault();
+                var $buttonclicked = $(this);
+                var amenid = $buttonclicked.attr('data-id');
+                var status = $buttonclicked.attr('data-status');
+
+                var num = 0;
+                if (status == 'delete') {
+                    num = $buttonclicked.attr('data-qty');
+                }
+                else {
+                    var x = $("select[name^='perperson_" + amenid + "']").val();
+                    if (x > 0) { num = x; }
+                }
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Discount", "AddOns", new { area = "Reserv"})',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "id": amenid, "status": status, "num": num },
+                    datatype: "json",
+                    success: function (data) {
+
+                        location.reload(true);
+                    },
+                    error: function () {
+                        if (status == 'add') {
+                            alert("Sorry could not add this amenitity");
+                        }
+                        else {
+                            alert("Sorry, there's an error with this amenitity.");
+                        }
+                    }
+
+                });
+            });
+
+            $('.anchorperday').click(function (e) {
+                e.preventDefault();
+                var $buttonclicked = $(this);
+                var amenid = $buttonclicked.attr('data-id');
+                var status = $buttonclicked.attr('data-status');
+                var day = new Date("1/1/0001 12:00:00");
+                var packageid = $buttonclicked.attr('data-packageid');
+
+                if (status == "delete") {
+                    day = $buttonclicked.attr('data-day');
+                }
+                else {
+                    var x = $("select[name^='perday_" + amenid + "']").val();
+                    if (Date.parse(x)) { day = x; }
+                }
+
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("PackagePerDay", "AddOns", new { area = "Reserv"})',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "id": amenid, "status": status, "day": day, "packageid": packageid },
+                    datatype: "json",
+                    success: function (data) {
+
+                        location.reload(true);
+                    },
+                    error: function () {
+                        if (status == 'add') {
+                            alert("Sorry could not add this amenitity");
+                        }
+                        else {
+                            alert("Sorry, there's an error with this amenitity.");
+                        }
+                    }
+
+                });
+            });
+            $('.anchorperdayperson').click(function (e) {
+                e.preventDefault();
+                var $buttonclicked = $(this);
+                var amenid = $buttonclicked.attr('data-id');
+                var status = $buttonclicked.attr('data-status');
+                var day = new Date("1/1/0001 12:00:00");
+                var person = 0;
+                var packageid = $buttonclicked.attr('data-packageid');
+
+                if (status == "delete") {
+                    day = $buttonclicked.attr('data-day');
+                    person = $buttonclicked.attr('data-people');
+                }
+                else {
+                    var x = $("select[name^='day_" + amenid + "']").val();
+                    if (Date.parse(x)) { day = x; }
+                    var p = $("select[name^='person_" + amenid + "']").val();
+                    if (p > 0) { person = p;}
+                }
+
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("PackagePerDayPerson", "AddOns", new { area = "Reserv"})',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "id": amenid, "status": status, "day": day, "person": person, "packageid": packageid },
+                    datatype: "json",
+                    success: function (data) {
+
+                        location.reload(true);
+                    },
+                    error: function () {
+                        if (status == 'add') {
+                            alert("Sorry could not add this amenitity");
+                        }
+                        else {
+                            alert("Sorry, there's an error with this amenitity.");
+                        }
+                    }
+
+                });
+            });
+        })
+    </script>
+}
+
+
+
+

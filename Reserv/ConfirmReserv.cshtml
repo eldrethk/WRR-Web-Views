@@ -1,0 +1,140 @@
+﻿@model WRR.Areas.Reserv.Models.BookReservationViewModel
+
+@using WRR.Extensions;
+@{
+    ViewBag.Title = "ConfirmReserv";
+    Layout = "~/Areas/Reserv/Views/Shared/_ReservLayout.cshtml";
+}
+
+
+<div class="container rounded my-4 bg-gray-200 p-3">
+    <h2 class="text-center">Thank you for booking with us</h2>
+    <div class="rounded bg-white p-2 my-4 mx-2 round-border">
+        @{ 
+            var createdDate = Model.Reservation.ReservationCreated.ToString("yyddMM");
+        }
+        <div class="text-center">@Html.ValidationSummary(true, "", new { @class = "text-danger" })</div>
+        <h4 class="text-center pt-2">Confirmation Number @createdDate-@Html.DisplayFor(model => model.Reservation.ReservationID)</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-6 col-sm-12 pb-2">
+                <p class="ml-auto mr-auto w-50 h5 font-weight-normal">
+                    <strong>Check In:</strong><br />
+                    @Convert.ToDateTime(Model.Reservation.ArrivalDate).ToString("ddd, MMM dd, yyyy")<br />
+                    After @Html.DisplayFor(model => model.Hotel.CheckIn)
+                </p>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <p class="ml-auto mr-auto w-50 h5 font-weight-normal">
+                    <strong>Check Out:</strong><br />
+                    @Convert.ToDateTime(Model.Reservation.DepartureDate).ToString("ddd, MMM dd, yyyy")<br />
+                    By @Html.DisplayFor(model => model.Hotel.CheckOut)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row rounded bg-white p-2 my-4 mx-2 round-border">
+        <div class="col-md-4">
+            @Html.ImageWithClass("MainImage", String.Format("/Content/room-images/{0}", Model.RoomType.MainImage.FileName), Model.RoomType.MainImage.FileName, "w-100 rounded")
+        </div>
+        <div class="col-md-8 mt-2">
+            <h3>@Html.DisplayFor(model => model.RoomType.RoomType.Name)</h3>
+
+            <p><span class="fa fa-user"></span> Sleeps @Html.DisplayFor(model => model.RoomType.MaxGuest) <span class="pl-3 fa fa-bed"></span> @Html.DisplayFor(model => model.RoomType.RoomType.BedType)</p>
+            @if (Model.RoomType.RoomType.Description.Length > 150)
+            {
+                <p>@Html.DisplayFor(model => model.RoomType.RoomType.Description).ToString().Substring(0, 150))...</p>
+            }
+            else
+            {
+                <p>@Html.DisplayFor(model => model.RoomType.RoomType.Description)</p>
+            }
+            <p>
+                <strong>Guest: @Html.DisplayFor(model => model.Reservation.Adults) Adults, @Html.DisplayFor(model => model.Reservation.Children) Children</strong><br />
+                <strong>Rooms Booked: 1</strong>
+            </p>
+        </div>
+    </div>
+
+    @if (Model.AddOns.Count > 0)
+    {
+        <div class="rounded bg-white p-3 my-4 mx-2 round-border">
+            <h3>Add-0ns</h3>
+            <hr />
+            <table class="w-100 table-sm table-responsive-sm">
+                @foreach (var amenity in Model.AddOns)
+                {
+                    <tr class="border-bottom">
+                        <td>@Html.DisplayFor(item => amenity.extraAmenity.Name)</td>
+                        <td class="text-center">
+                            @if (amenity.bookedAmenity.NumPeople > 0)
+                            {<span>Qty </span> @amenity.bookedAmenity.NumPeople}
+                            @if (amenity.bookedAmenity.NumDate > DateTime.MinValue && amenity.bookedAmenity.NumDate != null)
+                            {@amenity.bookedAmenity.NumDate.ToString("ddd, MMM dd")}
+                        </td>
+                        <td class="text-right">@string.Format("{0:C}", amenity.bookedAmenity.TotalCharge)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+    <div class="">
+    <div class="row mx-2 g-2">
+        <div class="col-md-6 col-sm-12 h-100 p-0 mb-3">
+            <div class="bg-white round-border rounded p-3 h-100 mr-md-2">
+                <h3>Payment Information</h3>
+                <hr />
+                <table class="w-75 detail-display-table h-100">
+                    <tr>
+                        <td>Subtotal</td>
+                        <td class="text-right pr-1">@string.Format("{0:C}", Model.Reservation.SubTotal)</td>
+                    </tr>
+                    <tr>
+                        <td>Taxes &amp; fees</td>
+                        <td class="text-right pr-1">@string.Format("{0:C}", Model.Reservation.TotalFees)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Cost</strong></td>
+                        <td class="text-right pr-1"><strong>@string.Format("{0:C}", Model.Reservation.TotalCharge)</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary">Deposit</td>
+                        <td class="text-right pr-1 text-primary">@string.Format("{0:C}", Model.Reservation.Deposit)</td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12 h-100 p-0 mb-3">
+            <div class="bg-white round-border rounded p-3 h-100 ml-md-2">
+                <h3>Customer Details</h3>
+                <hr />
+                <table class="w-100 detail-display-table">
+                    <tr>
+                        <td style="width:200px;">Name</td>
+                        <td>@Html.DisplayFor(model => model.Reservation.CusFirstName) @Html.DisplayFor(model => model.Reservation.CusLastName)</td>
+                    </tr>
+                    <tr>
+                        <td valign="top">Address</td>
+                        <td>@Html.DisplayFor(model => model.Reservation.CusAddress1) <br /> @Html.DisplayFor(model => model.Reservation.CusCity), @Html.DisplayFor(model => model.Reservation.CusState) @Html.DisplayFor(model => model.Reservation.CusZip)</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>@Html.DisplayFor(model => model.Reservation.CusDayPhone)</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>@Html.DisplayFor(model => model.Reservation.CusEmail, new { @class ="text-break"})</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="rounded bg-white p-3 my-4 mx-2 round-border">
+        <h3>Term &amp; Conditions</h3>
+        <hr />
+        @Html.Raw(HttpUtility.HtmlDecode(Model.Disclaimer.DisclaimerText.ToString()))
+    </div>
+</div>

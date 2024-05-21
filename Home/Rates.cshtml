@@ -1,0 +1,319 @@
+﻿@model WRR.Areas.Reserv.Models.RackBookingViewModel
+
+@using WRR.Extensions
+
+@{
+    ViewBag.Title = "Rates";
+    Layout = "~/Areas/Reserv/Views/Shared/_ReservLayout.cshtml";
+    
+}
+
+
+
+<div class="container rounded my-4 bg-gray-200 p-3">
+    @using (Html.BeginForm("Rates", "Home", new { @ID = Model.Hotel.HotelID }, FormMethod.Post, null))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-row rounded align-items-end bg-white p-3 round-border">
+
+            <div class="form-group col-12 text-center p-1">
+                <div>@Html.ValidationMessageFor(model => model.ArrivalDate, "", new { @class = "text-danger" })</div>
+                <div>@Html.ValidationMessageFor(model => model.DepartureDate, "", new { @class = "text-danger" })</div>
+                <div>@Html.ValidationMessageFor(model => model.Adults, "", new { @class = "text-danger" })</div>
+                <div>@Html.ValidationMessageFor(model => model.Children, "", new { @class = "text-danger" })</div>
+            </div>
+            <div class="form-group col-sm-12 col-md-3">
+                @Html.LabelFor(model => model.ArrivalDate)
+                @Html.EditorFor(model => model.ArrivalDate, new { htmlAttributes = new { @class = "form-control", @id = "dt1" } })
+            </div>
+            <div class="form-group col-sm-12 col-md-3">
+                @Html.LabelFor(model => model.DepartureDate)
+                @Html.EditorFor(model => model.DepartureDate, new { htmlAttributes = new { @class = "date-picker2 form-control", @id = "dt2" } })
+            </div>
+            <div class="form-group col">
+                @Html.LabelFor(model => model.Adults)
+                @Html.DropDownListFor(model => model.Adults, Enumerable.Range(1, 10).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), htmlAttributes: new { @class = "custom-select" })
+            </div>
+            <div class="form-group col">
+                @Html.LabelFor(model => model.Children)
+                @Html.DropDownListFor(model => model.Children, Enumerable.Range(0, 11).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), htmlAttributes: new { @class = "custom-select" })
+            </div>
+            <div class="form-group col text-center">
+
+                <input type="submit" value="Search" class="btn btn-primary w-75" />
+            </div>
+        </div>
+    }
+</div>
+
+
+<div class="container rounded my-4 bg-gray-200 p-3">
+    @if (Model.AvailableRooms.Count > 0)
+    {
+      
+        <div class="rounded bg-white py-2 my-4 mx-2 text-center round-border">
+            <div class="row justify-content-center">
+                <div class="col-sm-4 h5 text-center pt-2"><i class="fas fa-calendar-alt text-secondary d-none d-md-inline-block"></i> @Convert.ToDateTime(Model.ArrivalDate).ToString("ddd, MMM dd") - @Convert.ToDateTime(Model.DepartureDate).ToString("ddd, MMM dd")</div>
+                <div class="col-sm-4 h5 text-center pt-2"><i class="fas fa-user text-secondary ml-3 mr-2 d-none d-md-inline-block"></i>@Html.DisplayFor(model => model.Adults) Adults <span class="d-md-none d-sm-inline mr-1">/</span><i class="fas fa-child text-secondary ml-2 mr-2 d-none d-md-inline-block"></i>@Html.DisplayFor(model => model.Children) Children</div>
+            </div>
+            
+        </div>
+        foreach (var AvailRooms in Model.AvailableRooms)
+        {
+            <div class="row rounded bg-white p-2 my-4 mx-2 round-border">
+                @if (AvailRooms.MainImage.FileName != null)
+                {
+                    <div class="col-md-4 pb-1 viewmore-img-container">
+                        <a class="anchorRoom simple-img" data-id='@AvailRooms.RoomType.RoomTypeID'>@Html.ImageWithClass("MainImage", String.Format("/Content/room-images/{0}", AvailRooms.MainImage.FileName), "", "w-100 rounded")</a>
+                        <a class="anchorRoom zoom-icon" data-id="@AvailRooms.RoomType.RoomTypeID"><span class="fas fa-expand fa-3x"></span></a>
+                    </div>
+                }
+                <div class="col pb-1 mt-2">
+                    <h3>@Html.DisplayFor(item => AvailRooms.RoomType.Name)</h3>
+                    <p><span class="fa fa-user"></span> Sleeps @Html.DisplayFor(item => AvailRooms.MaxGuests) <span class="pl-3 fa fa-bed"></span> @Html.DisplayFor(item => AvailRooms.RoomType.BedType)</p>
+                    @if (AvailRooms.RoomType.Description.Length > 150)
+                    {
+                        <p>@Html.DisplayFor(item => AvailRooms.RoomType.Description).ToString().Substring(0, 150))...</p>
+                    }
+                    else
+                    {
+                        <p>@Html.DisplayFor(item => AvailRooms.RoomType.Description)</p>
+                    }
+                </div>
+                <div class="col-md-2 float-right py-3 pb-1">
+                    <div class="d-none d-md-block">
+                        <p class="text-secondary"><strong>RATES AS LOW AS</strong></p>
+                        <p><span class="h3">@Html.DisplayFor(item => AvailRooms.LowRate)</span> / day</p>
+                    </div>
+                    <p class="my-2"><button type="button" id="btnViewMore" class="anchorRoom btn btn-info w-100" data-id='@AvailRooms.RoomType.RoomTypeID'>Room Details</button></p>
+                </div>
+                <div class="col-md-12">
+                    <hr />
+                </div>
+                @if (Model.TotalDays < AvailRooms.MinStay)
+                {
+                    <div class="col-md-12 text-right"><span class="badge badge-dark p-3 mb-2">a @Html.DisplayFor(item => AvailRooms.MinStay) night minimum stay is required.</span> </div>
+                }
+                else
+                {
+                    foreach (var package in AvailRooms.PackageRates)
+                    {
+                        <div class="col-md-7 pt-2">
+                            <h4>@Html.DisplayFor(item => package.Package.Name)</h4>
+                            <p>@Html.Raw(HttpUtility.HtmlDecode(package.Package.Description))</p>
+                        </div>
+                        <div class="col-md-3 pt-2 text-center">
+                            @if (Model.ViewPackageRate == "Subtotal")
+                            {
+                                <p class="mb-0"><span class="h3">$@Html.DisplayFor(item => package.SubTotal) </span> <span class="small d-md-none d-sm-inline text-uppercase"> / subtotal</span></p>
+                                <p class="small d-none d-md-inline-block">Subtotal</p>
+                            }
+                            else if (Model.ViewPackageRate == "Total")
+                            {
+                                <p class="mb-0"><span class="h3">$@Html.DisplayFor(item => package.Total)</span><span class="small d-md-none d-sm-inline text-uppercase"> / total</span></p>
+                                <p class="small d-none d-md-inline-block">Total</p>
+                            }
+                            else
+                            {
+                                <p class="mb-0"><span class="h3">$@Html.DisplayFor(item => package.AvgPerNight)</span><span class="small d-md-none d-sm-inline text-uppercase"> / avg per night</span></p>
+                                <p class="small d-none d-md-inline-block">Avg Per Night</p>
+                            }
+                        </div>
+                        <div class="col-md-2 pt-2">
+                            <p>@Html.ActionLink("Select", "SelectPackage", new { id = Model.Hotel.HotelID, packageid = package.PackageID, roomid = AvailRooms.RoomType.RoomTypeID }, new { @class = "btn btn-primary w-100" })</p>
+                            <p><button type="button" class="anchorPackage btn btn-secondary w-100" data-roomid="@AvailRooms.RoomType.RoomTypeID" data-packageid="@package.PackageID">View Rates</button></p>
+                            <div class="modal fade" id="PackageModal" role="dialog" data-backdrop="static">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div id="packageModalContent"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <hr />
+                        </div>
+                    }
+
+                    <div class="col-md-7 pt-2">
+                        <h4>Standard Rate</h4>
+                    </div>
+                    <div class="col-md-3 pt-2 text-center">
+                        @if (Model.ViewRoomRate == "Subtotal")
+                        {
+                            <p class="mb-0"><span class="h3">$@Html.DisplayFor(item => AvailRooms.RackRates.SubTotal) </span><span class="small d-md-none d-sm-inline text-uppercase"> / subtotal</span></p>
+                            <p class="small d-none d-md-inline-block">SubTotal</p>
+                        }
+                        else if (Model.ViewRoomRate == "Total")
+                        {
+                            <p class="mb-0"><span class="h3">$@Html.DisplayFor(item => AvailRooms.RackRates.Total) </span><span class="small d-md-none d-sm-inline text-uppercase"> / total</span></p>
+                            <p class="small d-none d-md-inline-block">Total</p>                            
+                        }
+                        else
+                        {
+                            <p class="mb-0"><span class="h3">$@Html.DisplayFor(item => AvailRooms.RackRates.AvgPerNight) </span><span class="small d-md-none d-sm-inline text-uppercase"> / avg per night</span></p>
+                            <p class="small d-none d-md-inline-block">Avg Per Night</p>
+                            
+                        }
+                    </div>
+                    <div class="col-md-2 pt-2">
+                        <p>@Html.ActionLink("Select", "SelectRoom", new { id = Model.Hotel.HotelID, roomid = AvailRooms.RoomType.RoomTypeID }, new { @class = "btn btn-primary w-100" })</p>
+                        <p><button type="button" class="anchorRate btn btn-secondary w-100" data-id="@Json.Encode(AvailRooms.RackRates)">View Rates</button></p>
+                        <div class="modal fade" id="RateModal" role="dialog" data-backdrop="static">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div id='rateModalContent'>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        }
+    }
+    else
+    {
+        <div class="row bg-white pt-3 pb-1 m-2 text-center">
+            <p class="text-danger w-100 text-center">@ViewBag.ErrorMsg</p>
+
+        </div>
+    }
+</div>
+
+    <div id='RoomModal' class='modal' role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div id='RoomModalContent'></div>
+            </div>
+        </div>
+
+    </div>
+
+
+             
+
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+
+        <script type="text/javascript">
+            $("#dt1").datepicker({
+                startDate: new Date('@Model.StartDate'),
+                minDate: 0,
+                autoclose: true
+            });
+
+            $('#dt1').datepicker().on('changeDate', function (date) {
+                var dt1 = $('#dt1').datepicker('getDate');
+                var dt2 = $('#dt2').datepicker('getDate');
+                if (dt2 <= dt1) {
+                    dt1.setDate(dt1.getDate() + 3);
+                    $('#dt2').datepicker('setDate', dt1);
+                }
+
+            });
+
+            $('#dt2').datepicker({
+                startDate: new Date('@Model.StartDate'),
+                minDate: 0,
+                autoclose: true
+            });
+
+            $('#dt2').datepicker().on('changeDate', function (date) {
+                var dt1 = $('#dt1').datepicker('getDate');
+                var dt2 = $('#dt2').datepicker('getDate');
+                if (dt2 <= dt1) {
+                    alert("Departure Date has to be greater than Arrival Date");
+                    dt2.setDate(dt2.getDate() - 3);
+                    $('#dt1').datepicker('setDate', dt2);
+                }
+            });
+
+
+
+            $(function () {
+
+                $('.anchorRate').click(function (e) {
+                e.preventDefault();
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ViewRoomRates", "Home", new { area = "Reserv" })',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Jsonmodel": id },
+                    datatype: "json",
+                    success: function (data) {
+
+                        $('#rateModalContent').html(data);
+
+                        $('#RateModal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                    });
+                });
+
+
+                $('.anchorPackage').click(function (e) {
+                e.preventDefault();
+                var $buttonClicked = $(this);
+                    var roomid = $buttonClicked.attr('data-roomid');
+                    var packageid = $buttonClicked.attr('data-packageid');
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ViewPackageRates", "Home", new { area = "Reserv" })',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "roomid": roomid, "packageid": packageid },
+                    datatype: "json",
+                    success: function (data) {
+
+                        $('#packageModalContent').html(data);
+
+                        $('#PackageModal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            });
+
+
+            $('.anchorRoom').click(function (e) {
+                e.preventDefault();
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ViewRoomDetail", "Home", new { area = "Reserv" })',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id },
+                    datatype: "json",
+                    success: function (data) {
+
+                        $('#RoomModalContent').html(data);
+
+                        $('#RoomModal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            });
+
+
+        });
+
+
+        </script>
+    }
