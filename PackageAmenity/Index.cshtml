@@ -1,0 +1,643 @@
+﻿@model WRR.Models.PackageAmentityViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Package Add-ons</h2>
+<hr />
+<div class="row mb-3">
+    <p><span class="h1 text-primary px-3">@Html.DisplayFor(model => model.PackageName)</span>
+    @Html.ActionLink("(Back to List)", "Index", "Packages")</p>
+</div>
+
+@Html.HiddenFor(model => model.PackageID)
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+@{
+    var itemcount = 0;
+}
+
+@foreach (var extraAmentity in Model.HotelAmentities)
+{
+    var status = false;
+    int[] selected = Model.Amenities;
+
+    int pos = Array.IndexOf(selected, extraAmentity.AmenityID);
+    if(pos > -1)
+    {
+        status = true;
+    }
+    else
+    {
+        status = false;
+    }
+
+
+    if (itemcount % 3 == 0 || itemcount % 3 == 3)
+    {
+        @Html.Raw("<div class='row mb-5'>")
+    }
+<div class="col-md-4">
+    @if (extraAmentity.PerDayPerPerson == true)
+    {
+        <div class="card  border-primary bg-primary mb-3 h-100">
+            <div class="card-header text-white bg-primary h2">@Html.DisplayFor(amenity => extraAmentity.Name)</div>
+            <div class="card-body bg-white">
+                <div class="h-100" style="display:grid;">
+                    <p class="text-lg"><strong>Type:<span class="text-primary"> Per Day Per Person</span> </strong></p>
+                    <p class="text-lg"><strong>Rate: </strong>@Html.DisplayFor(amenity => extraAmentity.AmenityRate)</p>
+                    <p class="card-text m-0">
+                        <div>
+                            @Html.Raw(HttpUtility.HtmlDecode(extraAmentity.Description))
+                        </div>
+                    </p>
+                    @if (status == true)
+                    {
+                        foreach (var amen in Model.PackageAmenities)
+                        {
+                            if (amen.ExtraAmenityID == extraAmentity.AmenityID)
+                            {
+                                <p class="font-weight-bold text-lg">
+                                    Mandatory :
+                                    @if (amen.Mandatory == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    View Rates:
+                                    @if (amen.ViewRate == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Additional Purchases:
+                                    @if (amen.AdditionalPurchases == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Max Quantity:
+                                    @Html.DisplayFor(m => amen.MandatoryQuantity)
+                                </p>
+                            }
+                        }
+                    }
+                    <div class="align-self-end ml-auto mt-2">
+                        @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                        {
+                            if (status == false)
+                            {
+                                <button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Add</button>
+                            }
+                            else
+                            {
+                                <button type="button" id="btnEdit" class="anchorEdit btn btn-primary" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Edit</button>
+                                @Html.ActionLink("Remove", "Remove", new { id = extraAmentity.AmenityID, packageid = Model.PackageID }, new { onclick = "return confirm('Are you sure you want to remove');" })
+                            }
+                        }
+                        else
+                        {
+                            if (status == true)
+                            { <p><strong>(Included)</strong></p>}
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (extraAmentity.PerDay == true)
+    {
+        <div class="card  border-info bg-info mb-3 h-100">
+            <div class="card-header text-white bg-info h2">@Html.DisplayFor(amenity => extraAmentity.Name)</div>
+            <div class="card-body bg-white">
+                <div class="h-100" style="display:grid;">
+                    <p class="text-lg"><strong>Type:<span class="text-info"> Per Day</span> </strong></p>
+                    <p class="text-lg"><strong>Rate: </strong>@Html.DisplayFor(amenity => extraAmentity.AmenityRate)</p>
+                    <p class="card-text m-0">
+                        <div>
+                            @Html.Raw(HttpUtility.HtmlDecode(extraAmentity.Description))
+                        </div>
+                    </p>
+                    @if (status == true)
+                    {
+                        foreach (var amen in Model.PackageAmenities)
+                        {
+                            if (amen.ExtraAmenityID == extraAmentity.AmenityID)
+                            {
+                                <p class="font-weight-bold text-lg">
+                                    Mandatory :
+                                    @if (amen.Mandatory == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    View Rates:
+                                    @if (amen.ViewRate == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Additional Purchases:
+                                    @if (amen.AdditionalPurchases == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                            }
+                        }
+                    }
+                    <div class="align-self-end ml-auto mt-2">
+                        @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                        {
+                            if (status == false)
+                            {
+                                <button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Add</button>
+                            }
+                            else
+                            {
+                                <button type="button" id="btnEdit" class="anchorEdit btn btn-info" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Edit</button>
+                                @Html.ActionLink("Remove", "Remove", new { id = extraAmentity.AmenityID, packageid = Model.PackageID }, new { onclick = "return confirm('Are you sure you want to remove');" })
+                            }
+                        }
+                        else
+                        {
+                            if (status == true)
+                            { <p><strong>(Included)</strong></p>}
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (extraAmentity.PerNightStay == true)
+    {
+        <div class="card  border-success bg-success mb-3 h-100">
+            <div class="card-header text-white bg-success h2">@Html.DisplayFor(amenity => extraAmentity.Name)</div>
+            <div class="card-body bg-white">
+                <div class="h-100" style="display:grid;">
+                    <p class="text-lg"><strong>Type:<span class="text-success"> Per Night Stay</span> </strong></p>
+                    <p class="text-lg"><strong>Rate: </strong>@Html.DisplayFor(amenity => extraAmentity.AmenityRate)</p>
+                    <p class="card-text m-0">
+                        <div>
+                            @Html.Raw(HttpUtility.HtmlDecode(extraAmentity.Description))
+                        </div>
+                    </p>
+                    @if (status == true)
+                    {
+                        foreach (var amen in Model.PackageAmenities)
+                        {
+                            if (amen.ExtraAmenityID == extraAmentity.AmenityID)
+                            {
+                                <p class="font-weight-bold text-lg">
+                                    Mandatory :
+                                    @if (amen.Mandatory == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    View Rates:
+                                    @if (amen.ViewRate == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                              
+                            }
+                        }
+                    }
+                    <div class="align-self-end ml-auto mt-2">
+                        @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                        {
+                            if (status == false)
+                            {
+                                <button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Add</button>
+                            }
+                            else
+                            {
+                                <button type="button" id="btnEdit" class="anchorEdit btn btn-info" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Edit</button>
+                                @Html.ActionLink("Remove", "Remove", new { id = extraAmentity.AmenityID, packageid = Model.PackageID }, new { onclick = "return confirm('Are you sure you want to remove');" })
+                            }
+                        }
+                        else
+                        {
+                            if (status == true)
+                            { <p><strong>(Included)</strong></p>}
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (extraAmentity.OneTimeFee == true)
+    {
+        <div class="card  border-danger bg-danger mb-3 h-100">
+            <div class="card-header text-white bg-danger h2">@Html.DisplayFor(amenity => extraAmentity.Name)</div>
+            <div class="card-body bg-white">
+                <div class="h-100" style="display:grid;">
+                    <p class="text-lg"><strong>Type:<span class="text-danger"> One Time Fee</span> </strong></p>
+                    <p class="text-lg"><strong>Rate: </strong>@Html.DisplayFor(amenity => extraAmentity.AmenityRate)</p>
+                    <p class="card-text m-0">
+                        <div>
+                            @Html.Raw(HttpUtility.HtmlDecode(extraAmentity.Description))
+                        </div>
+                    </p>
+                    @if (status == true)
+                    {
+                        foreach (var amen in Model.PackageAmenities)
+                        {
+                            if (amen.ExtraAmenityID == extraAmentity.AmenityID)
+                            {
+                                <p class="font-weight-bold text-lg">
+                                    Mandatory :
+                                    @if (amen.Mandatory == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    View Rates:
+                                    @if (amen.ViewRate == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Additional Purchases:
+                                    @if (amen.AdditionalPurchases == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                            }
+                        }
+                    }
+                    <div class="align-self-end ml-auto mt-2">
+                        @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                        {
+                            if (status == false)
+                            {
+                                <button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Add</button>
+                            }
+                            else
+                            {
+                                <button type="button" id="btnEdit" class="anchorEdit btn btn-danger" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Edit</button>
+                                @Html.ActionLink("Remove", "Remove", new { id = extraAmentity.AmenityID, packageid = Model.PackageID }, new { onclick = "return confirm('Are you sure you want to remove');" })
+
+                            }
+                        }
+                        else
+                        {
+                            if (status == true)
+                            { <p><strong>(Included)</strong></p>}
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (extraAmentity.OneTimeFeePerson == true)
+    {
+        <div class="card  border-warning bg-warning mb-3 h-100">
+            <div class="card-header text-white bg-warning h2">@Html.DisplayFor(amenity => extraAmentity.Name)</div>
+            <div class="card-body bg-white">
+                <div class="h-100" style="display:grid;">
+                    <p class="text-lg"><strong>Type:<span class="text-warning"> One Time Fee Per Person</span> </strong></p>
+                    <p class="text-lg"><strong>Rate: </strong>@Html.DisplayFor(amenity => extraAmentity.AmenityRate)</p>
+                    <p class="card-text m-0">
+                        <div>
+                            @Html.Raw(HttpUtility.HtmlDecode(extraAmentity.Description))
+                        </div>
+                    </p>
+                    @if (status == true)
+                    {
+                        foreach (var amen in Model.PackageAmenities)
+                        {
+                            if (amen.ExtraAmenityID == extraAmentity.AmenityID)
+                            {
+                                <p class="font-weight-bold text-lg">
+                                    Mandatory :
+                                    @if (amen.Mandatory == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    View Rates:
+                                    @if (amen.ViewRate == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Additional Purchases:
+                                    @if (amen.AdditionalPurchases == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Max Quantity:
+                                    @Html.DisplayFor(m => amen.MandatoryQuantity)
+                                </p>
+                            }
+                        }
+                    }
+                    <div class="align-self-end ml-auto mt-2">
+                        @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                        {
+                            if (status == false)
+                            {
+                                <button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Add</button>
+                            }
+                            else
+                            {
+                                <button type="button" id="btnEdit" class="anchorEdit btn btn-warning" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Edit</button>
+                                @Html.ActionLink("Remove", "Remove", new { id = extraAmentity.AmenityID, packageid = Model.PackageID }, new { onclick = "return confirm('Are you sure you want to remove');" })
+
+                            }
+                        }
+                        else
+                        {
+                            if (status == true)
+                            { <p><strong>(Included)</strong></p>}
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (extraAmentity.Discount == true)
+    {
+        <div class="card  border-secondary bg-secondary mb-3 h-100">
+            <div class="card-header text-white bg-secondary h2">@Html.DisplayFor(amenity => extraAmentity.Name)</div>
+            <div class="card-body bg-white">
+                <div class="h-100" style="display:grid;">
+                    <p class="text-lg"><strong>Type:<span class="text-secondary"> Discount</span> </strong></p>
+                    <p class="text-lg"><strong>Rate: </strong>@Html.DisplayFor(amenity => extraAmentity.AmenityRate)</p>
+                    <p class="card-text m-0">
+                        <div>
+                            @Html.Raw(HttpUtility.HtmlDecode(extraAmentity.Description))
+                        </div>
+                    </p>
+                    @if (status == true)
+                    {
+                        foreach (var amen in Model.PackageAmenities)
+                        {
+                            if (amen.ExtraAmenityID == extraAmentity.AmenityID)
+                            {
+                                <p class="font-weight-bold text-lg">
+                                    Mandatory :
+                                    @if (amen.Mandatory == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    View Rates:
+                                    @if (amen.ViewRate == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Additional Purchases:
+                                    @if (amen.AdditionalPurchases == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Max Quantity:
+                                    @Html.DisplayFor(m => amen.MandatoryQuantity)
+                                </p>
+                            }
+                        }
+                    }
+                    <div class="align-self-end ml-auto mt-2">
+                        @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                        {
+                            if (status == false)
+                            {
+                                <button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Add</button>
+                            }
+                            else
+                            {
+                                <button type="button" id="btnEdit" class="anchorEdit btn btn-secondary" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Edit</button>
+                                @Html.ActionLink("Remove", "Remove", new { id = extraAmentity.AmenityID, packageid = Model.PackageID }, new { onclick = "return confirm('Are you sure you want to remove');" })
+
+                            }
+                        }
+                        else
+                        {
+                            if (status == true)
+                            { <p><strong>(Included)</strong></p>}
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card  border-primary bg-primary mb-3 h-100">
+            <div class="card-header text-white bg-primary h2">@Html.DisplayFor(amenity => extraAmentity.Name)</div>
+            <div class="card-body bg-white">
+                <div class="h-100" style="display:grid;">
+                    <p class="text-lg"><strong>Type: <span class="text-primary"> Other</span></strong></p>
+                    <p class="text-lg"><strong>Rate: </strong>@Html.DisplayFor(amenity => extraAmentity.AmenityRate)</p>
+                    <p class="card-text m-0">
+                        <div>
+                            @Html.Raw(HttpUtility.HtmlDecode(extraAmentity.Description))
+                        </div>
+                    </p>
+                    @if (status == true)
+                    {
+                        foreach (var amen in Model.PackageAmenities)
+                        {
+                            if (amen.ExtraAmenityID == extraAmentity.AmenityID)
+                            {
+                                <p class="font-weight-bold text-lg">
+                                    Mandatory :
+                                    @if (amen.Mandatory == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+
+                                <p class="font-weight-bold text-lg">
+                                    View Rates:
+                                    @if (amen.ViewRate == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                                <p class="font-weight-bold text-lg">
+                                    Additional Purchases:
+                                    @if (amen.AdditionalPurchases == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </p>
+                            }
+                        }
+                    }
+                    <div class="align-self-end ml-auto mt-2">
+
+                        <button type="button" id="btnAdd" class="anchorAdd btn btn-success" data-id='@extraAmentity.AmenityID' data-package-id='@Model.PackageID'>Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+    itemcount++;
+    if (itemcount % 3 == 0 || itemcount % 3 == 3)
+    {
+        @Html.Raw("</div>")
+    }
+
+}
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="popup"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        var add = '/PackageAmenity/Add';
+        var edit = '/PackageAmenity/Edit';
+
+       
+
+        $('.anchorAdd').click(function (e) {
+            var $buttonClicked = $(this);
+            var id = $buttonClicked.attr('data-id');
+            var packageid = $buttonClicked.attr('data-package-id');
+            $.ajax({
+                type: "GET",
+                url: add,
+                data: { "id": id, "packageid": packageid },
+                success: function (data) {
+                    $('#popup').html(data);
+                    $('#myModal').modal('show');
+                }
+            })
+        })
+        $('.anchorEdit').click(function (e) {
+            var $buttonClicked = $(this);
+            var id = $buttonClicked.attr('data-id');
+            var packageid = $buttonClicked.attr('data-package-id');
+            $.ajax({
+                type: "GET",
+                url: edit,
+                data: { "id": id, "packageid": packageid },
+                success: function (data) {
+                    $('#popup').html(data);
+                    $('#myModal').modal('show');
+                }
+            })
+        })
+
+        
+
+
+    </script>
+}

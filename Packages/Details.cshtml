@@ -1,0 +1,204 @@
+﻿@model WRR.Models.PackageViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using WRR.Extensions
+
+<h2>Package Details</h2>
+
+<div class="form-horizontal">
+   
+    <hr />
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Package.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Package.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Package.Description)
+        </dt>
+
+        <dd>
+            @Html.Raw(HttpUtility.HtmlDecode(Model.Package.Description))
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Package.ShortDescription)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Package.ShortDescription)
+        </dd>
+
+        <dt>@Html.Label("Package Image")</dt>
+        <dd>  @Html.Image("PackageImage", String.Format("/Content/package-images/{0}", Model.Package.SmImage), Model.Package.SmImage, "50%", "50%")</dd>
+
+        <dt>Package Includes:</dt>
+
+        <div class="form-group form-padding-left">
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.WeekendSurcharge, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.WeekendSurcharge, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.ResortFees, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ResortFees, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.ExtraPersonFee, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ExtraPersonFee, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.Visible, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.Visible, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.MiniVac, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.MiniVac, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.Amenity, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.Amenity, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+        </div>
+
+        <dt>Room Types Included:</dt>
+
+        <ul class="list-group col-md-5 mb-4">
+            @foreach (var room in Model.RoomTypes)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.Label(room.Name)
+                </li>
+            }
+        </ul>
+
+
+        <dt>@Html.DisplayNameFor(model => model.Package.MinDays)</dt>
+        <dd>@Html.DisplayFor(model => model.Package.MinDays)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Package.MaxDays)</dt>
+        <dd>@Html.DisplayFor(model => model.Package.MaxDays)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Package.ValidFrom)</dt>
+        <dd>@Html.DisplayFor(model => model.Package.ValidFrom)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Package.ValidtTo)</dt>
+        <dd>@Html.DisplayFor(model => model.Package.ValidtTo)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Package.EndDisplayDate)</dt>
+        <dd>@Html.DisplayFor(model => model.Package.EndDisplayDate)</dd>
+
+        <div class="form-group">
+            <dt>Arrival Days:</dt>
+        </div>
+
+        <div class="form-group form-inline form-padding-left">
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.ArrMon, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ArrMon, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.ArrTues, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ArrTues, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.ArrWed, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ArrWed, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline">
+                @Html.CheckBoxFor(model => model.Package.ArrThurs, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ArrThurs, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline">
+                @Html.CheckBoxFor(model => model.Package.ArrFri, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ArrFri, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline">
+                @Html.CheckBoxFor(model => model.Package.ArrSat, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ArrSat, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline">
+                @Html.CheckBoxFor(model => model.Package.ArrSun, htmlAttributes: new { @class = "custom-control-input", @disabled = "" })
+                @Html.LabelFor(model => model.Package.ArrSun, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+        </div>
+
+        @if (Model.Package.NightsFee == true)
+        {
+            <dt>@Html.DisplayNameFor(model => model.Package.NumberOfNights)</dt>
+            <dd>@Html.DisplayFor(model => model.Package.NumberOfNights)</dd>
+        }
+        else if (Model.Package.PercentOff == true)
+        {
+            <dt>@Html.DisplayNameFor(model => model.Package.PercentageOff)</dt>
+            <dd>@Html.DisplayFor(model => model.Package.PercentageOff)%</dd>
+        }
+        else
+        {
+            <dt>Package Type</dt>
+            <dd>Price Point</dd>
+        }
+
+        <dt>@Html.LabelFor(model => model.Package.PackageAllocation)</dt>
+        <div class="form-group">
+            <div class="col-md-10">
+                <div class="custom-control custom-switch">
+                    @Html.RadioButton("PackageAllocation", "Yes", Model.Package.PackageAllocation, htmlAttributes: new { @class = "custom-control-input", @id = "yes", @disabled = "" })
+                    @Html.Label("Yes", htmlAttributes: new { @class = "custom-control-label", @for = "yes" })
+
+                </div>
+                <div class="custom-control custom-switch">
+                    @Html.RadioButton("PackageAllocation", "No", Model.Package.PackageAllocation == false ? true : false, htmlAttributes: new { @class = "custom-control-input", @id = "no", @disable = "" })
+                    @Html.Label("No", htmlAttributes: new { @class = "custom-control-label", @for = "no" })
+                </div>
+            </div>
+        </div>
+
+
+    </dl>
+</div>
+
+<div class="w-50 mb-5">
+    <ul class="list-group">
+        <li class="list-group-item bg-secondary text-white">Amenities Included: </li>
+        @if (Model.Amenities.Count > 0)
+        {
+            foreach (var amenity in Model.Amenities)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.ActionLink(amenity.Name, "Details", "ExtraAmenity", new { id = amenity.AmenityID }, null)
+                </li>
+            }
+        }
+        else
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                None
+            </li>
+        }
+    </ul>
+</div>
+
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Package.PackageID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,330 @@
+﻿@model WRR.Models.ReservationReportDetailViewModel
+
+@{
+    ViewBag.Title = "PackageReservationDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="noprint">Detail Report</h2>
+<hr class="noprint" />
+<div class="w-100 text-success text-center h4" id="reviewname"></div>
+@if (Model.PackageReservation.Initals.IsEmpty())
+{
+    <div class="form-padding-left text-center noprint">
+        <button type="button" id="btnPrint" data-secprint="false" data-id="@Model.ReservationID" class="btn btn-success btn-lg mr-3">Print</button>
+        @Html.ActionLink("Back to Report", "ReservationReport", Model.SearchReportVM)
+    </div>
+}
+else
+{
+    <div class="row">
+        <p class="w-100 text-success text-center h4">Reviewed By @Html.DisplayFor(model => model.ReviewedInitals)</p>
+    </div>
+    <div class="form-padding-left text-center noprint">
+        @Html.ActionLink("Back to Report", "ReservationReport", Model.SearchReportVM) <button type="button" id="btnPrint" data-secprint="true" data-id="@Model.ReservationID" class="btn btn-info ml-3">Print again</button>
+
+    </div>
+}
+
+@if (Model.OpenCount > 1 && Model.ReviewedInitals.IsEmpty())
+{
+    <div class="alert alert-dismissible alert-danger w-50 mx-auto mt-3">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        This report has reached the max times opened. <strong>Credit card info will be removed</strong>
+    </div>
+}
+<div class="container">
+    <div class="row p-3">
+        <div class="col-md-6 p-3">
+            <h3 class="text-primary">Reservation</h3>
+            <hr />
+            <table class="w-100 report">
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.PKReservationID)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.PKReservationID)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageName)</td>
+                    <td>@Html.DisplayFor(model => model.PackageName)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.RoomName)</td>
+                    <td>@Html.DisplayFor(model => model.RoomName)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.ArrivalDate)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.ArrivalDate)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.DepartureDate)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.DepartureDate)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.TotalNights)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.TotalNights)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.Adults)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.Adults)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.Children)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.Children)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.SubTotal)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.SubTotal)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.ExtraAdultCharge)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.ExtraAdultCharge)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.ExtarChildCharge)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.ExtarChildCharge)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.WeekendFees)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.WeekendFees)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.ResortFees)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.ResortFees)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.TotalFees)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.TotalFees)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.Taxes)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.Taxes)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.TotalCharge)</td>
+                    <td class="font-weight-bold text-success">@Html.DisplayFor(model => model.PackageReservation.TotalCharge)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.Deposit)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.Deposit)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.Comments)</td>
+
+                </tr>
+                <tr>
+                    <td colspan="2">@Html.DisplayFor(model => model.PackageReservation.Comments)</td>
+                </tr>
+
+            </table>
+
+            <h3 class="text-primary pt-3">Daily Rates</h3>
+            <hr />
+            <table class="w-100 report">
+                @foreach (var daily in Model.DailyRate)
+                {
+                    <tr>
+                        <td class="font-weight-bold">@Html.DisplayFor(item => daily.ReservationDate)</td>
+                        <td>@Html.DisplayFor(item => daily.DailyRate)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col-md-6 p-3">
+            <h3 class="text-primary">Customer</h3>
+            <hr />
+            <table class="w-100 report">
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.CustomerName)</td>
+                    <td>@Html.DisplayFor(model => model.CustomerName)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CusAddress1)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CusAddress1)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CusAddress2)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CusAddress2)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CusCity)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CusCity)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CusState)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CusState)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CusZip)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CusZip)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CusDayPhone)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CusDayPhone)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CusEmail)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CusEmail)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.CCType)</td>
+                    <td>@Html.DisplayFor(model => model.CCType)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CardHolderName)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CardHolderName)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CardNumber)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CardNumber)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CardExpirationDate)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CardExpirationDate)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.CardSecureCode)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.CardSecureCode)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.ReservationCreated)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.ReservationCreated)</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">@Html.DisplayNameFor(model => model.PackageReservation.UserInitals)</td>
+                    <td>@Html.DisplayFor(model => model.PackageReservation.UserInitals)</td>
+                </tr>
+            </table>
+
+            @if (Model.Amenities.Count > 0)
+            {
+                <h3 class="text-primary pt-3">Amenities</h3>
+                <hr />
+                foreach (var amenity in Model.Amenities)
+                {
+                    <div class="card shadow mb-2">
+                        <div class="card-header text-white
+                             @if (amenity.extraAmenity.PerDay) { @Html.Raw("bg-info"); }
+                             else if (amenity.extraAmenity.OneTimeFee) { @Html.Raw("bg-danger"); }
+                             else if (amenity.extraAmenity.OneTimeFeePerson) { @Html.Raw("bg-warning"); }
+                             else if (amenity.extraAmenity.Discount) { @Html.Raw("bg-secondary"); }
+                             else {@Html.Raw("bg-primary"); }">
+                            <div class="w-100">
+                                <span class="font-weight-bold" data-toggle="tooltip" data-html="true" data-placement="bottom" title="" data-original-title="@Html.DisplayFor(item => amenity.extraAmenity.ShortDescription)">@Html.DisplayFor(item => amenity.extraAmenity.Name)</span>
+                                <div class="float-right small">
+                                    @if (amenity.extraAmenity.PerDay)
+                                    {<span>Per Day</span>}
+                                    else if (amenity.extraAmenity.OneTimeFee)
+                                    { <span>One Time Fee</span>}
+                                    else if (amenity.extraAmenity.OneTimeFeePerson)
+                                    {<span>One Time Per Person</span>}
+                                    else if (amenity.extraAmenity.Discount)
+                                    { <span>Discount</span>}
+                                    else if (amenity.extraAmenity.PerDayPerPerson)
+                                    { <span>Per Day Per Person</span>}
+                                    else if(amenity.extraAmenity.PerNightStay)
+                                    { <span>Per Night Stay</span>}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body justify-content-center">
+                            <table class="w-50 mx-auto">
+                                @if (amenity.bookedAmenity.NumPeople > 0)
+                                {
+                                    <tr>
+                                        <td class="font-weight-bold text-right">Qty:</td>
+                                        <td class="pl-4">@Html.DisplayFor(item => amenity.bookedAmenity.NumPeople)</td>
+                                    </tr>
+                                }
+                                @if (amenity.bookedAmenity.NumDate != null && amenity.bookedAmenity.NumDate > DateTime.MinValue)
+                                {
+                                    <tr>
+                                        <td class="font-weight-bold text-right">Date:</td>
+                                        <td class="pl-4">@Convert.ToDateTime(amenity.bookedAmenity.NumDate).ToString("ddd, MMM dd")</td>
+                                    </tr>
+                                }
+                                @if (amenity.bookedAmenity.Mandatory == false)
+                                {
+                                    <tr>
+                                        <td class="font-weight-bold text-right">Rate:</td>
+                                        <td class="pl-4">$@Html.DisplayFor(item => amenity.bookedAmenity.ChargeAmount)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-bold text-right">Tax:</td>
+                                        <td class="pl-4">$@Html.DisplayFor(item => amenity.bookedAmenity.TaxRate)</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td class="font-weight-bold text-right">Total:</td>
+                                    <td class="pl-4">
+                                        @if (amenity.bookedAmenity.Mandatory)
+                                        {<span class="text-success">(Included)</span> }
+                                        else
+                                        {<span>$</span>
+                                            @Html.DisplayFor(item => amenity.bookedAmenity.TotalCharge)
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                }
+
+            }
+
+        </div>
+
+    </div>
+
+</div>
+<div class="form-padding-left text-center noprint">
+    @Html.ActionLink("Back to Report", "ReservationReport", Model.SearchReportVM)
+
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip({ html: true });
+
+            $('#btnPrint').click(function (e) {
+                e.preventDefault();
+                var $btnClicked = $(this);
+                var resid = $btnClicked.attr('data-id');
+                var secondPrint = $btnClicked.attr('data-secprint');
+                PrintReport(resid, secondPrint);
+            });
+
+
+            function PrintReport(ResID, SecondPrint) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Report/PrintPackageReport',
+                    data: { "ID": ResID, "secondPrint": SecondPrint, "HotelID": @Model.PackageReservation.HotelID },
+                    success: function (data) {
+                        if (data.status) {
+                            if (data.useravail == false) {
+                                let user = "Reviewed by " + "@HttpContext.Current.User.Identity.Name";
+                                document.getElementById("reviewname").innerHTML = user;
+                            }
+                            window.print();
+                            location.reload(true);
+                        }
+                        else { alert("Error with User's Identity"); }
+
+                    },
+                    error: function () {
+                        alert("Error in printing document");
+                    }
+                })
+            };
+        });
+
+
+
+
+    </script>
+}

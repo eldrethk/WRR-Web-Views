@@ -1,0 +1,100 @@
+﻿@model WRR.Models.RackRackViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rack Rates</h2>
+@using (Html.BeginForm("Index", "RackRate", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @{ 
+          
+           int RoomID = Model.RoomType.RoomTypeID;
+        }
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.RoomType.RoomTypeID)
+
+        <div class="form-group">
+            <div class="col-md-4 control-label pb-2">Room Types:</div>
+            <div class="col-md-6">        
+                @Html.DropDownList("RoomTypes", new SelectList(Model.HotelRooms, "Value", "Text", RoomID), "--Select Room Type--", htmlAttributes: new { @class = "custom-select" })
+              </div>
+        </div>
+        <div class="row mt-1 mb-4">
+            <div class="col-md-6">
+                <input type="submit" value="Get Room" class="btn btn-primary btn-lg float-lg-right" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.RackRates != null)
+    {
+    <div class="mt-5 m-2">
+        <p class="h2 p-2">@Html.LabelForModel(Model.RoomType.Name)@Html.ActionLink("Edit Rates", "Edit", "RackRate", new { id = Model.RoomType.RoomTypeID }, new { @class = "btn btn-info m-2" })<p>
+
+        @if (Model.RackRates.Count > 0)
+        {
+        <table class="table table-responsive-sm">
+            <tr>
+
+                <th>
+                    Start Date
+                </th>
+                <th>
+                   End Date
+                </th>
+                   
+                <th>
+                    Tier A
+                </th>
+                <th>
+                    Tier B
+                </th>
+                <th>
+                    Tier C
+                </th>
+                <th>Tier D</th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.RackRates)
+            {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.TierARate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TierBRate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TierCRate)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.TierDRate)</td>
+                <td class="text-nowrap align-middle ">               
+                        @Html.ActionLink("Delete", "Delete", new { id = item.RackRateID }, new { onclick = "return confirm('Are you sure you want to delete?');" })                  
+                </td>
+            </tr>
+            }
+
+        </table>
+        }
+        else
+        {
+            <div class="alert alert-warning">No Results</div>
+        }
+    </div>
+    }

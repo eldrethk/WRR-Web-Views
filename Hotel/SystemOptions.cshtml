@@ -1,0 +1,268 @@
+﻿@model WRR.Data.Models.Hotel.HotelSystem
+
+@{
+    ViewBag.Title = "SystemOptions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Extra Fees</h2>
+<hr />
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.HotelID)
+    <div class="form-row mb-3">
+        <div class="form-group col-md-5">
+            <div class="card mr-4 h-100">
+                <h3 class="card-header bg-info text-white">Display Option</h3>
+                <div class="card-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DisplayRoomRatesAs, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.DropDownListFor(model => model.DisplayRoomRatesAs, ViewBag.roomlist as SelectList, htmlAttributes: new { @class = "custom-select" })
+                            @Html.ValidationMessageFor(model => model.DisplayRoomRatesAs, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DisplayPackageRatesAs, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.DropDownListFor(model => model.DisplayPackageRatesAs, ViewBag.packagelist as SelectList, htmlAttributes: new { @class = "custom-select" })
+                            @Html.ValidationMessageFor(model => model.DisplayPackageRatesAs, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DisplayRoomBreakDownAs, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.DropDownListFor(model => model.DisplayRoomBreakDownAs, ViewBag.roombreakdownlist as SelectList, htmlAttributes: new { @class = "custom-select" })
+                            @Html.ValidationMessageFor(model => model.DisplayRoomBreakDownAs, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DisplayPackageBreakDownAs, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.DropDownListFor(model => model.DisplayPackageBreakDownAs, ViewBag.packagebreakdownlist as SelectList, htmlAttributes: new { @class = "custom-select" })
+                            @Html.ValidationMessageFor(model => model.DisplayPackageBreakDownAs, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-md-5">
+            <div class="card ml-4">
+                <h3 class="card-header bg-info text-white">Deposit Calculations</h3>
+                <div class="card-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DepositRoomCalAs, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.DropDownListFor(model => model.DepositRoomCalAs, ViewBag.depositlist as SelectList, htmlAttributes :new { onclick = "showRoomDeposit(this)", @class = "custom-select" })
+                            @Html.ValidationMessageFor(model => model.DepositRoomCalAs, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DepositPackageCalAs, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.DropDownListFor(model => model.DepositPackageCalAs, ViewBag.depositlist as SelectList, htmlAttributes : new { onclick = "showPackageDeposit(this)", @class = "custom-select" })
+                            @Html.ValidationMessageFor(model => model.DepositPackageCalAs, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">                       
+                        <div class="custom-control custom-checkbox form-check-inline">
+                             @Html.CheckBoxFor(model => model.AddTaxToDeposit, htmlAttributes: new { @class = "custom-control-input" })
+                             @Html.LabelFor(model => model.AddTaxToDeposit, htmlAttributes: new { @class = "custom-control-label" })
+                         </div>
+                                          
+                    </div>
+                    <div id="RoomContainer" class="form-group no-display">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DepositRoomPercentage, htmlAttributes: new { @class = "control-label" })
+                            <div>
+                                @Html.EditorFor(model => model.DepositRoomPercentage, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.DepositRoomPercentage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div id="PackageContainer" class="form-group no-display">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DepositPackagePercentage, htmlAttributes: new { @class = "control-label" })
+                            <div>
+                                @Html.EditorFor(model => model.DepositPackagePercentage, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.DepositPackagePercentage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row mb-3">
+        <div class="form-group col-md-5">
+            <div class="card mr-4">
+                <h3 class="card-header bg-info text-white">Extra Person Calculation</h3>
+                <div class="card-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ExtraAdultFee, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.EditorFor(model => model.ExtraAdultFee, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ExtraAdultFee, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ExtraChildFee, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.EditorFor(model => model.ExtraChildFee, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ExtraChildFee, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ExtraBaseFee, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.EditorFor(model => model.ExtraBaseFee, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ExtraBaseFee, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">  
+                        <div class="custom-control custom-checkbox form-check-inline">
+                            @Html.CheckBoxFor(model => model.AddTaxToExtraPerson, htmlAttributes: new { @class="custom-control-input"})
+                            @Html.LabelFor(model => model.AddTaxToExtraPerson, htmlAttributes: new { @class = "custom-control-label" })
+                        </div>                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-5">
+            <div class="card ml-4 h-100">
+                <h3 class="card-header bg-info text-white">Other</h3>
+                <div class="card-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.TaxRate, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.EditorFor(model => model.TaxRate, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.TaxRate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PriorBook, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.EditorFor(model => model.PriorBook, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PriorBook, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.LowAllocationLimit, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.EditorFor(model => model.LowAllocationLimit, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.LowAllocationLimit, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row mb-3">
+        <div class="form-group col-md-5">
+            <div class="card mr-4">
+                <h3 class="card-header bg-info text-white">Resort Calculation</h3>
+                <div class="card-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ResortFeeCalAs, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.DropDownListFor(model => model.ResortFeeCalAs, ViewBag.calbylist as SelectList, htmlAttributes: new { @class = "custom-select" } )
+                            @Html.ValidationMessageFor(model => model.ResortFeeCalAs, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ResortFee, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.EditorFor(model => model.ResortFee, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ResortFee, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">                  
+                        <div class="custom-control custom-checkbox form-check-inline">
+                            @Html.CheckBoxFor(model => model.AddTaxToResortFee, htmlAttributes: new { @class="custom-control-input"})
+                            @Html.LabelFor(model => model.AddTaxToResortFee, htmlAttributes: new { @class = "custom-control-label" })                              
+                        </div>                      
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-md-5">
+            <div class="card ml-4 h-100">
+                <h3 class="card-header bg-info text-white">Weekend Fee Calculation</h3>
+                <div class="card-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.WeekendFee, htmlAttributes: new { @class = "control-label" })
+                        <div>
+                            @Html.EditorFor(model => model.WeekendFee, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.WeekendFee, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group form-inline">                       
+                        <div class="custom-control custom-checkbox form-check-inline">
+                            @Html.CheckBoxFor(model => model.AddTaxToWeekendFee, htmlAttributes: new { @class="custom-control-input"})
+                            @Html.LabelFor(model => model.AddTaxToWeekendFee, htmlAttributes: new { @class = "custom-control-label" })
+                        </div>                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+   
+
+   
+
+    <div class="row m-2 justify-content-center" style="max-width:80%;">
+        <div class="form-row">
+            <div class="col-auto">
+                <input type="submit" value="Save" class="btn btn-success btn-lg" />
+            </div>
+            <div class="col-auto my-auto">
+                @Html.ActionLink("Back", "DashBoard", "Home")
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        function showRoomDeposit(roomtype) {
+            debugger;
+            var selected = roomtype.value;
+            if (selected == "Percentage of Total") {
+                $('#RoomContainer').addClass("show-display").removeClass("no-display");
+            }
+            else {
+                $('#RoomContainer').addClass("no-display").removeClass("show-display");
+            }
+        };
+
+        function showPackageDeposit(pktype) {
+            debugger;
+            var selected = pktype.value;
+            if (selected == "Percentage of Total") {
+                $('#PackageContainer').addClass("show-display").removeClass("no-display");
+            }
+            else {
+                $('#PackageContainer').addClass("no-display").removeClass("show-display");
+            }
+        }
+       
+    </script>
+}

@@ -1,0 +1,57 @@
+﻿@model WRR.Models.PackageRackRateViewModel
+
+
+@using (Html.BeginForm("Create", "PackageRackRate", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-header">
+        <h2 class="modal-title text-primary form-padding-left">  @Html.DisplayFor(model => model.Package.Name)</h2>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    @Html.HiddenFor(model => model.Package.PackageID)
+    @Html.HiddenFor(model => model.RoomType.RoomTypeID)
+    @Html.HiddenFor(model => model.RoomType.Name)
+    <div class="modal-body">
+        <h3 class="text-secondary form-padding-left">@Html.DisplayFor(model => model.RoomType.Name)</h3>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NewRate.StartDate, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NewRate.StartDate, new { htmlAttributes = new { @class = "date-picker form-control", @autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.NewRate.StartDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NewRate.EndDate, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NewRate.EndDate, new { htmlAttributes = new { @class = "date-picker form-control", @autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.NewRate.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NewRate.Price, htmlAttributes: new { @class = "control-label col-md-5" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NewRate.Price, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NewRate.Price, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-success" value="Add Rate">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+}
+
+<script type="text/javascript">
+        $.validator.unobtrusive.parse(document);
+        $(document).ready(function () {
+            $('.date-picker').datepicker();
+
+        });
+</script>
+
+

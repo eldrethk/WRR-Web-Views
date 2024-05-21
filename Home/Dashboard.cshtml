@@ -1,0 +1,319 @@
+﻿@model WRR.Models.DashboardViewModel
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeadScript{
+    <meta http-equiv="refresh" content="60" />
+}
+
+
+<h2>Dashboard</h2>
+<!--Reservation Need review-->
+@if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel") || User.IsInRole("FrontDesk"))
+{
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Reservation Queue</h6>
+        </div>
+        <div class="card-body">
+            @if (Model.ReservationQue.Count > 0)
+            {
+                <div class="table-responsive table-hover">
+                    <table class="table table-bordered table-responsive-sm" id="dataTable" width="100%" cellspacing="0">
+                        <tr>
+
+                            <th>
+                                Reservation ID
+                            </th>
+                            <th>
+                                Customer Name
+                            </th>
+                            <th>
+                                Booked Date
+                            </th>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                Printed
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model.ReservationQue)
+                        {
+                            <tr>
+
+                                <td>
+                                    @if (item.ReservationType == 1)
+                                    {
+                                        @Html.ActionLink(item.ReservationID.ToString(), "ReservationDetails", "Report", new { id = item.ReservationID }, null)
+                                    }
+                                    else if (item.ReservationType == 2)
+                                    {
+                                        @Html.ActionLink(item.ReservationID.ToString(), "PackageReservationDetails", "Report", new { id = item.ReservationID }, null)
+                                    }
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CustomerName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.BookedDate)
+                                </td>
+
+                                @if (item.ReservationType == 1)
+                                {
+                                    <td class="text-primary font-weight-bold">Rack Rate</td>
+                                }
+                                else if (item.ReservationType == 2)
+                                {
+                                    <td class="text-success font-weight-bold">Special</td>
+                                }
+                                else if (item.ReservationType == 3)
+                                {
+                                    <td class="text-info font-weight-bold">Mini-Vac</td>
+                                }
+
+                                <td>
+                                    @if (item.Viewed == true)
+                                    {
+                                        <span class="badge badge-pill badge-primary">True</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-secondary">False</span>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+
+                    </table>
+
+                    <br />
+                    <div>
+                        @Html.PagedListPager(Model.ReservationQue, page => Url.Action("Dashboard", new { page }))
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">No Results</div>
+            }
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel") || User.IsInRole("FrontDesk") || User.IsInRole("Maintenance"))
+{
+    <!--Room Complaints-->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-danger">Room Complaints</h6>
+        </div>
+        <div class="card-body">
+            @if (Model.ComplaintQue.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Room Number</th>
+                                <th>Date</th>
+                                <th>Resolved</th>
+                                <th>Users</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ComplaintQue)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @Html.ActionLink(item.ComplaintID.ToString(), "Edit", "RoomComplaint", new { Area = "Maintenance", @id = item.ComplaintID }, null)
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.RoomNumber)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                                    </td>
+
+                                    @if (item.Resolved == true)
+                                    {
+                                        <td><span class="badge badge-pill badge-success">Yes</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge badge-pill badge-danger">No</span></td>
+                                    }
+
+                                    <td>
+                                        @Html.DisplayFor(modelitem => item.UserID)
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <br />
+                    <div>
+                        @Html.PagedListPager(Model.ComplaintQue, pageMaintenance => Url.Action("Dashboard", new { pageMaintenance }))
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">No Results</div>
+            }
+        </div>
+    </div>
+}
+
+
+@if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel") || User.IsInRole("FrontDesk"))
+{
+    <h2>The Past 30 Days</h2>
+    <!-- Past 30 days Row -->
+    <div class="row">
+        <!-- Reservation Card-->
+        <div class="col-xl-4 col-sm-12 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="font-weight-bold text-primary text-uppercase mb-1">Reservation Booked</div>
+                            @if (Model.Reservation_Booked.ReservationCount > 0)
+                            {
+                                <div class="h6 text-gray-700">@Html.LabelForModel(Model.Reservation_Booked.ReservationCount.ToString()) Reservations</div>
+                                <div class="h6 text-gray-700">@Html.LabelForModel(Model.Reservation_Booked.Nights.ToString()) <i class="fas fa-moon"></i> Nights</div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800">@Html.LabelForModel(Model.Reservation_Booked.Total.ToString("C"))</div>
+                            }
+                            else
+                            { <div class="h6 text-gray-700">None</div>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- specials Card Example -->
+        <div class="col-xl-4 col-sm-12 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="font-weight-bold text-success text-uppercase mb-1">Specials Booked</div>
+                            @if (Model.Specials_Booked.ReservationCount > 0)
+                            {
+                                <div class="h6 text-gray-700">@Html.LabelForModel(Model.Specials_Booked.ReservationCount.ToString()) Reservations</div>
+                                <div class="h6 text-gray-700">@Html.LabelForModel(Model.Specials_Booked.Nights.ToString()) <i class="fas fa-moon"></i> Nights</div>
+                                <div class="h4 mb-0 font-weight-bold text-gray-800">@Html.LabelForModel(Model.Specials_Booked.Total.ToString("C"))</div>
+                            }
+                            else
+                            { <div class="h6 text-gray-700">None</div>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Amentiies Card Example -->
+        <div class="col-xl-4 col-sm-12 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="font-weight-bold text-warning text-uppercase mb-1">Amenities Booked</div>
+                            @if (Model.Amenitity_Booked.ReservationCount > 0)
+                            {
+                                <div class="h6 text-gray-700">@Html.LabelForModel(Model.Amenitity_Booked.ReservationCount.ToString()) Add-Ons</div>
+
+                                <div class="h4 mb-0 font-weight-bold text-gray-800">@Html.LabelForModel(Model.Amenitity_Booked.Total.ToString("C"))</div>
+                            }
+                            else
+                            { <div class="h6 text-gray-700">None</div>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel") || User.IsInRole("FrontDesk"))
+{
+
+    <h2>Today's Event</h2>
+    <div class="row justify-content-center">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <label class="text-secondary display-4 mb-3">@Html.LabelForModel(Model.TodaysArrival.ToString())</label>
+                            <h3 class="text-primary">Arrivals</h3>
+                        </div>
+                        <div class="col-4 text-right pr-3">
+                            <i class="fas fa-bell text-secondary fa-3x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <label class="text-secondary display-4 mb-3">@Html.LabelForModel(Model.TodaysDeparture.ToString())</label>
+                            <h3 class="text-primary">Departures</h3>
+                        </div>
+                        <div class="col-4 text-right pr-3">
+                            <i class="fas fa-sign-out-alt text-secondary fa-3x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <label class="text-secondary display-4 mb-3">@Html.LabelForModel(Model.RoomOccuied.ToString())</label>
+                            <h3 class="text-primary">Room Occupied</h3>
+                        </div>
+                        <div class="col-4 text-right pr-3">
+                            <i class="fas fa-door-closed text-secondary fa-3x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+            $('ul.pagination li').addClass("page-item");
+            $('ul.pagination li a').addClass("page-link");
+
+
+        });
+
+    </script>
+
+} 

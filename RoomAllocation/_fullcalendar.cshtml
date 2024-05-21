@@ -1,0 +1,39 @@
+﻿@model WRR.Data.Models.RoomType.EventViewModel
+<div class="container mt-3 no-display" style="max-width:600px;" id="warning">
+    <div class="alert alert-dismissible alert-warning">
+        <button type="button" class="close" data-bs-dismiss="alert">&times;</button>
+        <strong>Heads up!</strong> If a date does not display a quantity, it has automatically been set to zero allocation
+    </div>
+ 
+
+</div>
+
+
+<div class="container mt-3" style="max-width:600px;">
+    <p class="h2 text-info text-center"><span id="RoomName"></span></p>
+    <div id='calendar'></div>
+
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="eventTitle"></span></h4>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" id="txtAllocation" class="form-control" />
+                    <input type="hidden" id="allocationid" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSave" class="btn btn-success">Save</button>
+
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

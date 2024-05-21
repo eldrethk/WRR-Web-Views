@@ -1,0 +1,62 @@
+﻿@model IEnumerable<WRR.Data.Models.Reservation.AmentiyReportBreakdown>
+
+@{
+    ViewBag.Title = "AmenityDailyBreakdown";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Amenity Daily Breakdown</h2>
+
+<p class="text-center text-lg text-primary">@ViewBag.Dates</p>
+
+@foreach (var item in Model)
+{
+    <p class="h3 text-primary">@Html.DisplayFor(modelitem => item.Amenity.Name)</p>
+
+
+    <table class="table mb-3">
+        <tr>
+            <th>
+                Booked Date
+            </th>
+
+            <th>
+                Reservation Count
+            </th>
+            <th>
+                Total Charge
+            </th>
+            <th>
+                Type
+            </th>
+
+        </tr>
+        @foreach (var daily in item.DailyReport)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => daily.BookedDate)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => daily.ReservationCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => daily.TotalCharge)
+                </td>
+                <td>
+                    @if (item.Package == true)
+                    {<span class="badge badge-pill badge-info">Package</span>}
+                    else
+                    { <span class="badge badge-pill badge-primary">Rack Rate</span>}
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+<div class="form-padding-left">
+    <a href="javascript:history.back()">Back to Report</a>
+</div>
+
+

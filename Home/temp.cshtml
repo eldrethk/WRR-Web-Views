@@ -1,0 +1,79 @@
+﻿@model PagedList.IPagedList<WRR.Data.Models.Package.Package>
+
+@using PagedList.Mvc;
+
+
+@{
+    ViewBag.Title = "temp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>temp</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Package Name
+        </th>
+
+        <th>
+            Min Days
+        </th>
+        <th>
+            Max Days
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.MinDays)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxDays)
+            </td>
+
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.PackageID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.PackageID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.PackageID })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<br />
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("temp",
+        new { page }))
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+
+        $(function () {
+           
+            $('ul.pagination li').addClass("page-item");
+            $('ul.pagination li a').addClass("page-link");
+
+
+        });
+
+    </script>
+
+}

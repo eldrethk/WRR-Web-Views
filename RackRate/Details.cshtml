@@ -1,0 +1,83 @@
+﻿@model WRR.Models.RackRackViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rack Rates</h2>
+<hr />
+
+
+@if (Model.RackRates != null)
+{
+    <div class="mt-5 m-2">
+        <p class="h2 p-2">@Html.LabelForModel(Model.RoomType.Name)@Html.ActionLink("Edit Rates", "Edit", "RackRate", new { id = Model.RoomType.RoomTypeID }, new { @class = "btn btn-info m-2" })<p>
+
+            @if (Model.RackRates.Count > 0)
+            {
+                <table class="table table-responsive-sm">
+                    <tr>
+
+                        <th>
+                            Start Date
+                        </th>
+                        <th>
+                            End Date
+                        </th>
+
+                        <th>
+                            Tier A
+                        </th>
+                        <th>
+                            Tier B
+                        </th>
+                        <th>
+                            Tier C
+                        </th>
+                        <th>Tier D</th>
+
+                    </tr>
+
+                    @foreach (var item in Model.RackRates)
+                    {
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StartDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EndDate)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TierARate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TierBRate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TierCRate)
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.TierDRate)</td>
+
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning">No Results</div>
+            }
+    </div>
+
+    <div class="row m-2 justify-content-center" style="max-width:90%;">
+
+        <p>
+
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+    </div>
+}
+

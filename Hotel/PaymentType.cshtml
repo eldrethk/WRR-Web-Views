@@ -1,0 +1,65 @@
+﻿@model WRR.Data.Models.System.PaymentTypeModel
+
+@{
+    ViewBag.Title = "PaymentType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using WRR.Extensions;
+
+<h2>Payment Types</h2>
+
+@using (Html.BeginForm("PaymentType", "Hotel"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-row">
+            <div class="col">
+                <div class="form-group form-padding-left">
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBox("amex", Model.Amex, htmlAttributes: new { @class = "custom-control-input", @name = "amex" })
+                        @Html.Label("American Express", htmlAttributes: new { @class = "custom-control-label", @for = "amex" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBox("visa", Model.Visa, htmlAttributes: new { @class = "custom-control-input", @name = "visa" })
+                        @Html.Label("Visa", htmlAttributes: new { @class = "custom-control-label", @for = "visa" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBox("mastercard", Model.MasterCard, htmlAttributes: new { @class = "custom-control-input", @name = "mastercard" })
+                        @Html.Label("Master Card", htmlAttributes: new { @class = "custom-control-label", @for = "mastercard" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBox("discover", Model.Discover, htmlAttributes: new { @class = "custom-control-input", @name = "discover" })
+                        @Html.Label("Discover", htmlAttributes: new { @class = "custom-control-label", @for = "discover" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBox("dinersclub", Model.DinersClub, htmlAttributes: new { @class = "custom-control-input", @name = "dinersclub" })
+                        @Html.Label("Diners Club", htmlAttributes: new { @class = "custom-control-label", @for = "dinersclub" })
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-6 text-right mt-3">
+                            <input type="submit" value="Save" class="btn btn-success btn-lg" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script type="text/javascript">
+        document.addEventListener('touchstart', handler, { passive: true });
+
+
+
+</script>
+

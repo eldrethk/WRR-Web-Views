@@ -1,0 +1,112 @@
+﻿@model WRR.Models.SummaryReportViewModel
+
+@using WRR.Extensions
+
+@{
+    ViewBag.Title = "SummaryReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Summary Report</h2>
+<hr />
+<p class="h2 text-center text-primary">@Html.LabelForModel(Model.CheckIn.ToString("MMM dd, yyyy")) -  @Html.LabelForModel(Model.Checkout.ToString("MMM dd, yyyy"))</p>
+<div class="row mt-5 mb-5">
+    <div class="col-lg-6 col-sm-12 mb-4">
+        <div class="card border-left-dark shadow h-100 mx-auto">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="font-weight-bold text-dark text-uppercase mb-1">Grand Total</div>
+                        @if (Model.TotalCount > 0)
+                        {
+                            <div class="h6 text-gray-700">@Html.LabelForModel(Model.TotalCount.ToString()) Reservations</div>
+                            <div class="h6 text-gray-700">@Html.LabelForModel(Model.TotalNights.ToString()) <i class="fas fa-moon"></i> Nights</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">@Html.LabelForModel(Model.Total.ToString("C"))</div>
+                        }
+                        else
+                        { <div class="h6 text-gray-700">None</div>}
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+    <div class="col-lg-6 col-sm-12 mb-4">
+        <div class="card border-left-warning shadow h-100 mx-auto">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="font-weight-bold text-warning text-uppercase mb-1">Amenities Booked</div>
+                        @if (Model.AmentityCount > 0)
+                        {
+                            <div class="h6 text-gray-700">@Html.LabelForModel(Model.AmentityResCount.ToString()) Reservations</div>
+                            <div class="h6 text-gray-700">@Html.LabelForModel(Model.AmentityCount.ToString()) <i class="fas fa-spa"></i> Amenities</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">@Html.LabelForModel(Model.AmentityTotal.ToString("C"))</div>
+                            <div class="text-right">@Html.IconActionLink(" ", "AmenityDailyBreakdown", "Report", new { checkin = Model.CheckIn, checkout = Model.Checkout }, null, "fas fa-calendar-day fa-2x text-warning")</div>
+                        }
+                        else
+                        {<div class="h6 text-gray-700">None</div>}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!-- Reservation Card-->
+    <div class="col-xl-4 col-sm-12 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="font-weight-bold text-primary text-uppercase mb-1">Reservation Booked</div>
+                        @if (Model.ReservationCount > 0)
+                        {
+                            <div class="h6 text-gray-700">@Html.LabelForModel(Model.ReservationCount.ToString()) Reservations</div>
+                            <div class="h6 text-gray-700">@Html.LabelForModel(Model.ReservationNights.ToString()) <i class="fas fa-moon"></i> Nights</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">@Html.LabelForModel(Model.ReservationTotal.ToString("C"))</div>
+                            <div class="text-right">@Html.IconActionLink(" ", "ReservationDailyBreakdown", "Report", new { checkin = Model.CheckIn, checkout = Model.Checkout }, null, "fas fa-calendar-day fa-2x text-primary")&nbsp; &nbsp; @Html.IconActionLink("", "ExportReservationToExcel", "Report", new { @start = Model.CheckIn, @end = Model.Checkout }, null, "far fa-file-excel fa-2x text-primary")</div>
+                        }
+                        else
+                        { <div class="h6 text-gray-700">None</div>}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- specials Card Example -->
+    <div class="col-xl-4 col-sm-12 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="font-weight-bold text-success text-uppercase mb-1">Specials Booked</div>
+                        @if (Model.PackageCount > 0)
+                        {
+                            <div class="h6 text-gray-700">@Html.LabelForModel(Model.PackageCount.ToString()) Reservations</div>
+                            <div class="h6 text-gray-700">@Html.LabelForModel(Model.PackageNights.ToString()) <i class="fas fa-moon"></i> Nights</div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">@Html.LabelForModel(Model.PackageTotal.ToString("C"))</div>
+                            <div class="text-right">@Html.IconActionLink("", "PackageDailyBreakdown", "Report", new { checkin = Model.CheckIn, checkout = Model.Checkout }, null, "fas fa-calendar-day fa-2x text-success")&nbsp; &nbsp; @Html.IconActionLink("", "ExportPackagesToExcel", "Report", new { @start = Model.CheckIn, @end = Model.Checkout }, null, "far fa-file-excel fa-2x text-success")</div>
+          
+                        }
+                        else
+                        { <div class="h6 text-gray-700">None</div>}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <!-- Group Card Example -->
+    <div class="col-xl-4 col-sm-12 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="font-weight-bold text-secondary text-uppercase mb-1">Groups Booked</div>
+                        <div class="h6 text-gray-700">None</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

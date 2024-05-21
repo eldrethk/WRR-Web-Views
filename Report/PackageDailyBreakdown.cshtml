@@ -1,0 +1,64 @@
+﻿@model IEnumerable<WRR.Data.Models.Reservation.ReportDailyBreakdown>
+
+@{
+    ViewBag.Title = "PackageDailyBreakdown";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var SearchViewModel = TempData["search"];
+
+}
+<h2>Package Daily Breakdown</h2>
+
+    <p class="text-center text-lg text-primary">@ViewBag.Dates</p>
+
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BookedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PackageName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReservationCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalCharge)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalNights)
+            </th>
+
+
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PackageName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReservationCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalCharge)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalNights)
+                </td>
+            </tr>
+        }
+
+    </table>
+
+  
+
+
+<div class="form-padding-left">
+    <a href="javascript:history.back()">Back to Report</a>
+</div>

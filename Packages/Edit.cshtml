@@ -1,0 +1,365 @@
+﻿@model WRR.Models.PackageViewModel
+
+@using WRR.Extensions
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Model.Package.Description = HttpUtility.HtmlDecode(Model.Package.Description);
+}
+
+@section HeadScript{
+
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.js"></script>
+
+}
+
+
+<h2>Edit a Package</h2>
+
+
+@using (Html.BeginForm("Edit", "Packages", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Package.PackageID)
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Package.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Package.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Package.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Package.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.PackageDescription, new { @rows = "20", @ID = "summernote" })
+                @Html.ValidationMessageFor(model => model.PackageDescription, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Package.ShortDescription, htmlAttributes: new { @class = "control-label pl-2" })
+            <em><strong>(no more than 500 characters and no Html code)</strong></em>
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Package.ShortDescription, new { @rows = "8", @cols = "80" })<br />
+                @Html.ValidationMessageFor(model => model.Package.ShortDescription, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">Package Image:</div>
+            <div class="col-md-10 pb-2">
+                @Html.Image("PackageImage", String.Format("/Content/package-images/{0}", Model.Package.SmImage), Model.Package.SmImage, "200", "200")
+            </div>
+            <div class="input-group mb-3 col-md-6">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="file" name="postedfile">
+                    <label class="custom-file-label" for="file">Choose file</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">Package needs to include:</div>
+        </div>
+
+        <div class="form-row">
+            <div class="col">
+                <div class="form-group form-padding-left">
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBoxFor(model => model.Package.WeekendSurcharge, htmlAttributes: new { @class = "custom-control-input" })
+                        @Html.LabelFor(model => model.Package.WeekendSurcharge, htmlAttributes: new { @class = "custom-control-label" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBoxFor(model => model.Package.ResortFees, htmlAttributes: new { @class = "custom-control-input" })
+                        @Html.LabelFor(model => model.Package.ResortFees, htmlAttributes: new { @class = "custom-control-label" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBoxFor(model => model.Package.ExtraPersonFee, htmlAttributes: new { @class = "custom-control-input" })
+                        @Html.LabelFor(model => model.Package.ExtraPersonFee, htmlAttributes: new { @class = "custom-control-label" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBoxFor(model => model.Package.SpecialPage, htmlAttributes: new { @class = "custom-control-input" })
+                        @Html.LabelFor(model => model.Package.SpecialPage, htmlAttributes: new { @class = "custom-control-label" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBoxFor(model => model.Package.MiniVac, htmlAttributes: new { @class = "custom-control-input" })
+                        @Html.LabelFor(model => model.Package.MiniVac, htmlAttributes: new { @class = "custom-control-label" })
+                    </div>
+
+                    <div class="custom-control custom-checkbox form-check-inline ">
+                        @Html.CheckBoxFor(model => model.Package.Visible, htmlAttributes: new { @class = "custom-control-input" })
+                        @Html.LabelFor(model => model.Package.Visible, htmlAttributes: new { @class = "custom-control-label" })
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    @Html.Label("Include Room Types", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-10">
+
+                        @Html.ListBoxFor(model => model.SelectedRoomTypeIds, new SelectList(Model.PackageRoom, "Value", "Text"), htmlAttributes: new { @class = "" })
+
+                    </div>
+                    @Html.ValidationMessageFor(model => model.SelectedRoomTypeIds, "", new { @class = "text-danger col-md-4" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-row">
+            <div class="form-group col-xl-4">
+                @Html.LabelFor(model => model.Package.MinDays, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Package.MinDays, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Package.MinDays, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-xl-4">
+                @Html.LabelFor(model => model.Package.MaxDays, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Package.MaxDays, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Package.MaxDays, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-xl-3">
+                @Html.LabelFor(model => model.Package.ValidFrom, htmlAttributes: new { @class = "control-label col-md-6" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Package.ValidFrom, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                    @Html.ValidationMessageFor(model => model.Package.ValidFrom, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-xl-3">
+                @Html.LabelFor(model => model.Package.ValidtTo, htmlAttributes: new { @class = "control-label col-md-6" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Package.ValidtTo, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                    @Html.ValidationMessageFor(model => model.Package.ValidtTo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group col-xl-3">
+                @Html.LabelFor(model => model.Package.EndDisplayDate, htmlAttributes: new { @class = "control-label col-md-6" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Package.EndDisplayDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                    @Html.ValidationMessageFor(model => model.Package.EndDisplayDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">Arrival Days:</div>
+        </div>
+
+        <div class="form-group form-inline form-padding-left">
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.ArrMon, htmlAttributes: new { @class = "custom-control-input" })
+                @Html.LabelFor(model => model.Package.ArrMon, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.ArrTues, htmlAttributes: new { @class = "custom-control-input" })
+                @Html.LabelFor(model => model.Package.ArrTues, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline ">
+                @Html.CheckBoxFor(model => model.Package.ArrWed, htmlAttributes: new { @class = "custom-control-input" })
+                @Html.LabelFor(model => model.Package.ArrWed, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline">
+                @Html.CheckBoxFor(model => model.Package.ArrThurs, htmlAttributes: new { @class = "custom-control-input" })
+                @Html.LabelFor(model => model.Package.ArrThurs, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline">
+                @Html.CheckBoxFor(model => model.Package.ArrFri, htmlAttributes: new { @class = "custom-control-input" })
+                @Html.LabelFor(model => model.Package.ArrFri, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline">
+                @Html.CheckBoxFor(model => model.Package.ArrSat, htmlAttributes: new { @class = "custom-control-input" })
+                @Html.LabelFor(model => model.Package.ArrSat, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+
+            <div class="custom-control custom-checkbox form-check-inline">
+                @Html.CheckBoxFor(model => model.Package.ArrSun, htmlAttributes: new { @class = "custom-control-input" })
+                @Html.LabelFor(model => model.Package.ArrSun, htmlAttributes: new { @class = "custom-control-label" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4 control-label">Package Type:</div>
+        </div>
+        @{
+            bool nights = Model.Package.NightsFee;
+            bool percent = Model.Package.PercentOff;
+            bool rate = Model.Package.PricePoint;
+        }
+
+        <div class="form-row">
+            <div class="col-md-2">
+                <div class="form-group form-padding-left">
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("PackageType", "Nights", nights, new { onclick = "showPackageType(this)", @class = "custom-control-input", @id = "night" })
+                        @Html.Label("Nights Free", htmlAttributes: new { @class = "custom-control-label", @for = "night" })
+                    </div>
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("PackageType", "Percentage", percent, new { onclick = "showPackageType(this)", @class = "custom-control-input", @id = "percentage" })
+                        @Html.Label("Percentage Off", htmlAttributes: new { @class = "custom-control-label", @for = "percentage" })
+                    </div>
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("PackageType", "Rate", rate, new { onclick = "showPackageType(this)", @class = "custom-control-input", @id = "rate" })
+                        @Html.Label("Price Point", htmlAttributes: new { @class = "custom-control-label", @for = "rate" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="NightsContainer" class='form-group @(nights == true ? "show-display" : "no-display")'>
+                    @Html.LabelFor(model => model.Package.NumberOfNights, htmlAttributes: new { @class = "control-label col-md-6" })
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.Package.NumberOfNights, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Package.NumberOfNights, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div id="PercentContainer" class='form-group @(percent == true ? "show-display" : "no-display")'>
+                    @Html.LabelFor(model => model.Package.PercentageOff, htmlAttributes: new { @class = "control-label col-md-6" })
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.Package.PercentageOff, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Package.PercentageOff, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Package.PackageAllocation, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="custom-control custom-switch">
+                    @Html.RadioButton("PackageAllocation", "Yes", Model.Package.PackageAllocation, htmlAttributes: new { @class = "custom-control-input", @id = "yes" })
+                    @Html.Label("Yes", htmlAttributes: new { @class = "custom-control-label", @for = "yes" })
+
+                </div>
+                <div class="custom-control custom-switch">
+                    @Html.RadioButton("PackageAllocation", "No", Model.Package.PackageAllocation == false ? true : false, htmlAttributes: new { @class = "custom-control-input", @id = "no" })
+                    @Html.Label("No", htmlAttributes: new { @class = "custom-control-label", @for = "no" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="w-50 mb-5">
+            <ul class="list-group">
+                <li class="list-group-item bg-secondary text-white">Amenities Included: </li>
+                @if (Model.Amenities.Count > 0)
+                {
+                    foreach (var amenity in Model.Amenities)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @Html.ActionLink(amenity.Name, "Details", "ExtraAmenity", new { id = amenity.AmenityID }, null)
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        None
+                    </li>
+                }
+            </ul>
+        </div>
+
+
+
+
+
+
+
+
+        <div class="row m-2 justify-content-center" style="max-width:80%;">
+            <div class="form-row">
+                <div class="col-auto">
+                    <input type="submit" value="Save" class="btn btn-primary btn-lg" />
+                </div>
+                <div class="col-auto my-auto">
+                    @Html.ActionLink("Back to List", "Index")
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/Content/FileSizeValidate.js"></script>
+    <script type="text/javascript">
+
+
+
+        $(function () {
+            $('.date-picker').datepicker();
+            $('#summernote').summernote({
+                height: 300
+            });
+
+
+        });
+        function showPackageType(PkType) {
+            debugger;
+            var selected = PkType.value;
+            if (selected == "Nights") {
+                $("#NightsContainer").removeClass("no-display").addClass("show-display");
+                $("#PercentContainer").removeClass("show-display").addClass("no-display");
+            }
+            else if (selected == "Percentage") {
+                $("#PercentContainer").removeClass("no-display").addClass("show-display");
+                $("#NightsContainer").removeClass("show-display").addClass("no-display");
+            }
+            else if (selected == "Rate") {
+                $("#NightsContainer").removeClass("show-display").addClass("no-display");
+                $("#PercentContainer").removeClass("show-display").addClass("no-display");
+            }
+        };
+
+        $('#file').on('change',
+            function () {
+                //get the file name
+                var fileName = $(this).val();
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
+
+
+        document.addEventListener("touchstart", this.handleTouchStart, { passive: true });
+
+
+
+    </script>
+
+
+}

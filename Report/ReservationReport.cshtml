@@ -1,0 +1,209 @@
+﻿@model WRR.Models.ReportViewModel
+
+@{
+    ViewBag.Title = "DetailReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Reservation Report</h2>
+<hr />
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Rack Rate Reservations</h6>
+    </div>
+    <div class="card-body">
+        @if (Model.Reservations.Count > 0)
+        {
+            <div class="table-responsive table-hover">
+                <table class="table table-bordered table-responsive-sm" id="dataTable" width="100%" cellspacing="0">
+                    <tr>
+
+                        <th>
+                            Reservation ID
+                        </th>
+                        <th>
+                            Last Name
+                        </th>
+                        <th>
+                            First Name
+                        </th>
+                        <th>
+                            Check In
+                        </th>
+                        <th>
+                            Check Out
+                        </th>
+                        <th>
+                            SubTotal
+                        </th>
+                        <th>
+                            Taxes/Fees
+                        </th>
+                        <th>
+                            Total
+                        </th>
+                        <th>
+                            Created
+                        </th>
+                        <th>Review By</th>
+                    </tr>
+
+                    @foreach (var item in Model.Reservations)
+                    {
+                        <tr class="@(item.Initals.Length == 0 ? "table-warning": "")">
+
+                            <td>
+                                @Html.ActionLink(item.ReservationID.ToString(), "ReservationDetails", new { id = item.ReservationID })
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CusLastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CusFirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ArrivalDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DepartureDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SubTotal)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TotalFees)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TotalCharge)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelitem => item.ReservationCreated)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelitem => item.Initals)
+                            </td>
+                          
+
+                        </tr>
+                    }
+
+                </table>
+
+                <br />
+              
+            </div>
+
+            <div class="text-right text-success font-weight-bold">
+                Total Reservations: @Html.DisplayFor(model => model.ReservationTotal)
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">No Results</div>
+        }
+    </div>
+</div>
+
+
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Package Reservations</h6>
+    </div>
+    <div class="card-body">
+        @if (Model.packageReservations.Count > 0)
+        {
+            <div class="table-responsive table-hover">
+                <table class="table table-bordered table-responsive-sm" id="dataTable" width="100%" cellspacing="0">
+                    <tr>
+
+                        <th>
+                            Reservation ID
+                        </th>
+                        <th>
+                            Last Name
+                        </th>
+                        <th>
+                            First Name
+                        </th>
+                        <th>
+                            Check In
+                        </th>
+                        <th>
+                            Check Out
+                        </th>
+                        <th>
+                            SubTotal
+                        </th>
+                        <th>
+                            Taxes/Fees
+                        </th>
+                        <th>
+                            Total
+                        </th>
+                        <th>
+                            Created
+                        </th>
+                        <th>Review By</th>
+                    </tr>
+
+                    @foreach (var item in Model.packageReservations)
+                    {
+                        <tr class="@(item.Initals.Length == 0 ? "table-warning": "")">
+
+                            <td>
+                                @Html.ActionLink(item.PKReservationID.ToString(), "PackageReservationDetails", new { id = item.PKReservationID })
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CusLastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CusFirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ArrivalDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DepartureDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SubTotal)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TotalFees)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TotalCharge)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelitem => item.ReservationCreated)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelitem => item.Initals)
+                            </td>
+
+
+                        </tr>
+                    }
+
+                </table>
+
+                <br />
+
+            </div>
+
+            <div class="text-right text-success font-weight-bold">
+                Total Packages: @Html.DisplayFor(model => model.PackgeTotal)
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">No Results</div>
+        }
+    </div>
+</div>
+<p class="text-right text-lg mr-2">
+    Total Charges: 
+<span class="badge badge-success text-lg">@Html.DisplayFor(model => model.Total)</span>
+</p>

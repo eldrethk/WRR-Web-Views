@@ -1,0 +1,108 @@
+﻿@model PagedList.IPagedList<WRR.Data.Models.Reservation.ReservationQue>
+
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "list";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>list</h2>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Reservation Queue</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive table-hover">
+            <table class="table table-bordered table-responsive-sm" id="dataTable" width="100%" cellspacing="0">
+                <tr>
+
+                    <th>
+                        Reservation ID
+                    </th>
+                    <th>
+                        Customer Name
+                    </th>
+                    <th>
+                        BookedDate
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Viewed
+                    </th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                <tr>
+
+                    <td>
+                        @Html.ActionLink(item.ReservationID.ToString(), "Details", new { id = item.ReservationID})
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomerName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BookedDate)
+                    </td>
+
+                    @if (item.ReservationType == 1)
+                    {
+                        <td class="text-success font-weight-bold">Rack Rate</td>
+                    }
+                    else if (item.ReservationType == 2)
+                    {
+                        <td class="text-info font-weight-bold">Special</td>
+                    }
+                    else if (item.ReservationType == 3)
+                    {
+                        <td class="text-warning font-weight-bold">Mini-Vac</td>
+                    }
+
+                    <td>
+                        @if (item.Viewed == true)
+                        {
+                            <span class="badge badge-pill badge-primary">True</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-pill badge-secondary">False</span>
+                        }
+                    </td>
+
+                </tr>
+                }
+
+            </table>
+
+            <br />
+            <div>
+                @Html.PagedListPager(Model, page => Url.Action("list",
+                    new { page }))
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('ul.pagination li').addClass("page-item");
+            $('ul.pagination li a').addClass("page-link");
+
+
+        });
+
+    </script>
+
+}
