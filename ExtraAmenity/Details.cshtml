@@ -1,0 +1,152 @@
+﻿@model WRR.Models.AmenityViewModel
+
+@using WRR.Extensions
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Extra Amenity Details</h2>
+
+<div class="form-horizontal">
+   
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Amenity.AmenityID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Amenity.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Amenity.Description)
+        </dt>
+
+        <dd>
+            @Html.Raw(HttpUtility.HtmlDecode(Model.Amenity.Description))
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Amenity.ShortDescription)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => Model.Amenity.ShortDescription)
+        </dd>
+
+        <dt>Amenity's Image:</dt>
+
+        <dd>
+            @if (Model.Amenity.PictureUrl.Length > 0)
+            {
+                @Html.Image("AmenityImage", String.Format("/Content/amenity-images/{0}", Model.Amenity.PictureUrl), "", "200", "200")
+            }
+            else
+            {
+                @Html.Label("None")
+            }
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Amenity.AmenityRate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Amenity.AmenityRate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Amenity.Tax)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Amenity.Tax)%
+        </dd>
+
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Amenity.ViewOnRackRate)
+        </dt>
+
+        <dd>
+            @if (Model.Amenity.ViewOnRackRate == true)
+            {
+                <span class="badge badge-pill badge-primary">True</span>
+            }
+            else
+            {
+                <span class="badge badge-pill badge-secondary">False</span>
+            }
+        </dd>
+        <dt>Amenity Type</dt>
+        <div class="form-row">
+            <div class="col-md-2">
+                <div class="form-group form-padding-left">
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("AmenityType", "PerDayPerPerson", Model.Amenity.PerDayPerPerson == true ? true : false, new { @class = "custom-control-input", @id = "pdpp", @disabled = "" })
+                        @Html.LabelFor(model => model.Amenity.PerDayPerPerson, htmlAttributes: new { @class = "custom-control-label", @for = "pdpp" })
+                    </div>
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("AmenityType", "PerDay", Model.Amenity.PerDay == true ? true : false, new { @class = "custom-control-input", @id = "pd", @disabled = "" })
+                        @Html.LabelFor(model => model.Amenity.PerDay, htmlAttributes: new { @class = "custom-control-label", @for = "pd" })
+                    </div>
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("AmenityType", "PerNightStay", Model.Amenity.PerNightStay == true ? true : false, new { @class = "custom-control-input", @id = "pns", @disabled = "" })
+                        @Html.LabelFor(model => model.Amenity.PerNightStay, htmlAttributes: new { @class = "custom-control-label", @for = "pns" })
+                    </div>
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("AmenityType", "OneTimeFee", Model.Amenity.OneTimeFee == true ? true : false, new { @class = "custom-control-input", @id = "otf", @disabled = "" })
+                        @Html.LabelFor(model => model.Amenity.OneTimeFee, htmlAttributes: new { @class = "custom-control-label", @for = "otf" })
+                    </div>
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("AmenityType", "OneTimeFeePerson", Model.Amenity.OneTimeFeePerson == true ? true : false, new { @class = "custom-control-input", @id = "otfp", @disabled = "" })
+                        @Html.LabelFor(model => model.Amenity.OneTimeFeePerson, htmlAttributes: new { @class = "custom-control-label", @for = "otfp" })
+                    </div>
+                    <div class="custom-control custom-switch">
+                        @Html.RadioButton("AmenityType", "Discount", Model.Amenity.Discount == true ? true : false, new { @class = "custom-control-input", @id = "dis", @disabled = "" })
+                        @Html.LabelFor(model => model.Amenity.Discount, htmlAttributes: new { @class = "custom-control-label", @for = "dis" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="discountcontainer" class='form-group @(Model.Amenity.Discount == true? "show-display" : "no-display")'>
+                    @Html.DisplayNameFor(model => model.Amenity.DiscountRegularRate)
+                    <div class="col-md-10">
+                        @Html.DisplayTextFor(model => model.Amenity.DiscountRegularRate)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-50 mb-5">
+            <ul class="list-group">
+                <li class="list-group-item bg-secondary text-white">Packages associated: </li>
+                @if (Model.Packages != null)
+                {
+                    foreach (var package in Model.Packages)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @Html.ActionLink(package.Name, "Details", "Packages", new { id = package.PackageID }, null)
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        None
+                    </li>
+                }
+            </ul>
+        </div>
+
+
+
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Amenity.AmenityID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

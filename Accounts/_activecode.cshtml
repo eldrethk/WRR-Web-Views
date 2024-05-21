@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Title = "_activecode";
+    Html.EnableClientValidation(true);
+
+}
+
+@using (Html.BeginForm("Activate", "Accounts", FormMethod.Post))
+{ 
+    @Html.AntiForgeryToken()
+<div class="modal-header">
+    <h2 class="modal-title text-primary form-padding-left"> Activate User</h2>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+   
+    <div class="form-group">
+        @Html.Label("Enter Code", new {@class="control-label form-padding-left" })
+        <div class="col-md-10">
+            @Html.TextBox("Code", null, new {@required = "required", @class="form-control"} )
+            <span class="field-validation-valid" data-valmsg-for="Code"></span>
+        </div>
+    </div>  
+</div>
+<div class="modal-footer">
+    <input type="submit" class="btn btn-success" value="Activate">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
+}
+
+
+<script type="text/javascript">
+    $.validator.unobtrusive.parse(document);
+   
+</script>
+

@@ -1,0 +1,58 @@
+﻿@model IEnumerable<WRR.Data.Models.Hotel.CalendarMessage>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Custom Message</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@if (Enumerable.Count(Model) > 0)
+{
+<table class="table table-responsive-md">
+    <tr>
+     
+        
+        <th>
+            @Html.DisplayNameFor(model => model.DisplayFrom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DisplayTo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Message)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+
+
+        <td>
+            @Html.DisplayFor(modelItem => item.DisplayFrom)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DisplayTo)
+        </td>
+        <td>
+            @Html.Raw(HttpUtility.HtmlDecode(item.Message.ToString()))
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.MessageID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.MessageID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.MessageID }, new { onclick="return confirm('Are you sure you want to delete?');"})
+        </td>
+    </tr>
+    }
+
+</table>
+}
+else
+{
+    <div class="alert alert-warning">No Results</div>
+}

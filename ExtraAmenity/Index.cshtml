@@ -1,0 +1,103 @@
+﻿@model IEnumerable<WRR.Data.Models.Amenity.ExtraAmenity>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add-ons</h2>
+@if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+{
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+}
+@if (Enumerable.Count(Model) > 0)
+{
+    <table class="table">
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.Label("Amenity Type")
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.ShortDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AmenityRate)              
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.ViewOnRackRate)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @if (item.Discount == true)
+                    {
+                        <span class="text-secondary font-weight-bold">@Html.DisplayNameFor(model => model.Discount)</span>
+                    }
+                    else if (item.OneTimeFee == true)
+                    {
+                        <span class="text-danger font-weight-bold">@Html.DisplayNameFor(model => model.OneTimeFee)</span>
+                    }
+                    else if (item.OneTimeFeePerson == true)
+                    {
+                        <span class="text-warning font-weight-bold">@Html.DisplayNameFor(model => model.OneTimeFeePerson)</span>
+                    }
+                    else if (item.PerDay == true)
+                    {
+                        <span class="text-info font-weight-bold">@Html.DisplayNameFor(model => model.PerDay)</span>
+                    }
+                    else if (item.PerDayPerPerson == true)
+                    {
+                        <span class="text-primary font-weight-bold">@Html.DisplayNameFor(model => model.PerDayPerPerson)</span>
+                    }
+                    else if(item.PerNightStay == true)
+                    {
+                        <span class="text-success font-weight-bold">@Html.DisplayNameFor(model => model.PerNightStay)</span>
+                    }
+
+                </td>
+                <td style="max-width:250px;">
+                    @Html.DisplayFor(modelitem => item.ShortDescription)
+                </td>
+                <td class="text-center">
+                    $@Html.DisplayFor(modelItem => item.AmenityRate)
+                </td>
+
+                <td class="text-center">
+                    @if (item.ViewOnRackRate == true)
+                    {
+                        <span class="badge badge-pill badge-success">On</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-pill badge-danger">Off</span>
+                    }
+                </td>
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.AmenityID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.AmenityID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.AmenityID, name = item.Name, hotelid = item.HotelID }, new { onclick = "return confirm('Are you sure you want to delete?');" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No Results</div>
+}

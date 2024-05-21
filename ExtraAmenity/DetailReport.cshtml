@@ -1,0 +1,174 @@
+﻿@model WRR.Models.AmenityReportViewModel
+
+@{
+    ViewBag.Title = "DetailReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add-ons Report</h2>
+<hr />
+
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h3 class="m-0 text-primary">Rack Rate Reservations</h3>
+    </div>
+    <div class="card-body">
+    @if (Model.RackRateAmenities.Count > 0)
+    {
+        <div class="table-responsive table-hover">
+            <table class="table table-responsive-sm">
+                <tr>
+                    <th>Reservation ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+                @foreach (var book in Model.RackRateAmenities)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(book.bookedAmenity.ReservationID.ToString(), "ReservationDetails", "Report", new { id = book.bookedAmenity.ReservationID }, new { target = "_blank" })</td>
+                        <td>@Html.DisplayFor(item => book.extraAmenity.Name)</td>
+                        <td>
+                            @if (book.extraAmenity.PerDay)
+                            {
+                                <div class="badge badge-pill badge-info">Per Day</div>
+                            }
+                            else if (book.extraAmenity.OneTimeFee)
+                            {
+                                <div class="badge badge-pill badge-danger">One Time Fee</div>
+                            }
+                            else if (book.extraAmenity.OneTimeFeePerson)
+                            {
+                                <div class="badge badge-pill badge-warning">One Time Per Person</div>
+                            }
+                            else if (book.extraAmenity.Discount)
+                            {
+                                <div class="badge badge-pill badge-secondary">Discount</div>
+                            }
+                            else if (book.extraAmenity.PerDayPerPerson)
+                            {
+                                <div class="badge badge-pill badge-primary">Per day per person</div>
+                            }
+                            else if (book.extraAmenity.PerNightStay)
+                            {
+                                <div class="badge badge-pill badge-success">Per Night Stay</div>
+                            }
+                        </td>
+                        <td>
+                            @if (book.bookedAmenity.NumDate != null && book.bookedAmenity.NumDate > DateTime.MinValue)
+                            {
+                                <div>@Convert.ToDateTime(book.bookedAmenity.NumDate).ToString("ddd, MMM dd, yyyy")</div>
+                            }
+
+                        </td>
+                        <td>
+                            @if (book.bookedAmenity.NumPeople > 0)
+                            {
+                                @Html.DisplayFor(item => book.bookedAmenity.NumPeople)
+                            }
+                        </td>
+
+                        <td>$@Html.DisplayFor(item => book.bookedAmenity.TotalCharge)</td>
+                    </tr>
+                }
+            </table>
+            <br/>
+
+        </div>
+        <div class="text-right text-success font-weight-bold">
+            Rack Rates Total: $@Html.DisplayFor(item => Model.RackRateTotal)
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">No Results</div>
+    }
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h3 class="m-0 text-primary">Package Reservations</h3>
+    </div>
+    <div class="card-body">
+        @if (Model.PackageAmenities.Count > 0)
+        {
+            <div class="table-responsive table-hover">
+                <table class="table table-responsive-sm">
+                    <tr>
+                        <th>Reservation ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                    </tr>
+                    @foreach (var book in Model.PackageAmenities)
+                    {
+                        <tr>
+                            <td>@Html.ActionLink(book.bookedAmenity.ReservationID.ToString(), "PackageReservationDetails", "Report", new { id = book.bookedAmenity.ReservationID }, new { target = "_blank" })</td>
+                            <td>@Html.DisplayFor(item => book.extraAmenity.Name)</td>
+                            <td>
+                                @if (book.extraAmenity.PerDay)
+                                {
+                                    <div class="badge badge-pill badge-info">Per Day</div>
+                                }
+                                else if (book.extraAmenity.OneTimeFee)
+                                {
+                                    <div class="badge badge-pill badge-danger">One Time Fee</div>
+                                }
+                                else if (book.extraAmenity.OneTimeFeePerson)
+                                {
+                                    <div class="badge badge-pill badge-warning">One Time Per Person</div>
+                                }
+                                else if (book.extraAmenity.Discount)
+                                {
+                                    <div class="badge badge-pill badge-secondary">Discount</div>
+                                }
+                                else if (book.extraAmenity.PerDayPerPerson)
+                                {
+                                    <div class="badge badge-pill badge-primary">Per day per person</div>
+                                }
+                                else if (book.extraAmenity.PerNightStay)
+                                {
+                                    <div class="badge badge-pill badge-success">Per Night Stay</div>
+                                }
+                            </td>
+                            <td>
+                                @if (book.bookedAmenity.NumDate != null && book.bookedAmenity.NumDate > DateTime.MinValue)
+                                {
+                                    <div>@Convert.ToDateTime(book.bookedAmenity.NumDate).ToString("ddd, MMM dd, yyyy")</div>
+                                }
+                            </td>
+                            <td>
+                                @if (book.bookedAmenity.NumPeople > 0)
+                                {
+                                    @Html.DisplayFor(item => book.bookedAmenity.NumPeople)
+                                }
+                            </td>
+                            <td>$@Html.DisplayFor(item => book.bookedAmenity.TotalCharge)</td>
+                        </tr>
+                    }
+                </table>
+                <br/>
+            </div>
+            <div class="text-right text-success font-weight-bold">
+                Package Total: $@Html.DisplayFor(item=> Model.PackageTotal)
+            </div>
+        }
+        else
+        {
+           <div class="alert alert-warning">No Results</div>
+        }
+
+            
+    </div>
+</div>
+
+<p class="text-right text-lg mr-2">
+    Total Charges:
+    <span class="badge badge-success text-lg">$@(Model.PackageTotal + Model.RackRateTotal)</span>
+</p>

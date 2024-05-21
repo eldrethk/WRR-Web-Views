@@ -1,0 +1,69 @@
+﻿@model IndentityManagement.Entities.Register
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+
+
+<h2>Register New User</h2>
+<hr />
+@using (Html.BeginForm("Register", "Accounts", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    
+    
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+        <div class="col-md-4">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        <div class="col-md-4">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        </div>
+    </div>
+    
+      
+   
+    <div class="form-group">
+        <div class="col-md-4 control-label">Roles</div>
+    </div>
+    <div class="form-group form-padding-left">
+        <div class="custom-control custom-checkbox form-check-inline">
+            @Html.CheckBoxFor(m => m.HotelRole, htmlAttributes: new { @class = "custom-control-input" })
+            @Html.LabelFor(m => m.HotelRole, htmlAttributes: new { @class = "custom-control-label" })
+        </div>
+        <div class="custom-control custom-checkbox form-check-inline">
+            @Html.CheckBoxFor(m => m.FrontDeskRole, htmlAttributes: new { @class = "custom-control-input" })
+            @Html.LabelFor(m => m.FrontDeskRole, htmlAttributes: new { @class = "custom-control-label" })
+        </div>
+        <div class="custom-control custom-checkbox form-check-inline">
+            @Html.CheckBoxFor(m => m.MaintenanceRole, htmlAttributes: new { @class = "custom-control-input" })
+            @Html.LabelFor(m => m.MaintenanceRole, htmlAttributes: new { @class = "custom-control-label" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-4">
+            <input type="submit" class="btn btn-default btn-primary" value="Register" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/customscripts")
+}
+

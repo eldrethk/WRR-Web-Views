@@ -1,0 +1,45 @@
+﻿@model WRR.Data.Models.Hotel.CalendarMessage
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Custom Message</h2>
+<hr />
+<div>
+
+    <dl class="dl-horizontal">
+
+
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DisplayFrom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DisplayFrom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DisplayTo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DisplayTo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Message)
+        </dt>
+
+        <dd>
+            @Html.Raw(HttpUtility.HtmlDecode(Model.Message))
+        </dd>
+      
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.MessageID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,138 @@
+﻿@model WRR.Data.Models.CalendarEvents.CalendarEvents
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create a Calendar Event</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">   
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Details, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Details, new {  @class = "form-control", @rows = "8", @cols = "100" } )<br/>
+            @Html.ValidationMessageFor(model => model.Details, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-xl-4">
+            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-xl-4">
+            @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "date-picker form-control" } })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Venue, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Venue, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Venue, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Time, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Time, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Time, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Website, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Website, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Website, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ImgUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.ImgUrl, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.ImgUrl, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row m-2 justify-content-center" style="max-width:80%;">
+        <div class="form-row">
+            <div class="col-auto">
+                <input type="submit" value="Create" class="btn btn-primary btn-lg" />
+            </div>
+            <div class="col-auto my-auto">
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+
+
+        $(function () {
+            $('.date-picker').datepicker();
+
+        });
+       
+
+        $('#file').on('change',
+            function () {
+                //get the file name
+                var fileName = $(this).val();
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
+
+
+        document.addEventListener('touchstart', handler, { passive: true });
+
+
+
+    </script>
+
+
+}

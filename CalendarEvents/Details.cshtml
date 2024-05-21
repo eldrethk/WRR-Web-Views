@@ -1,0 +1,102 @@
+﻿@model WRR.Data.Models.CalendarEvents.CalendarEvents
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using WRR.Extensions
+
+<h2>Details</h2>
+<hr/>
+<div>
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EventID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Venue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Venue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Website)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Website)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Details)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Details)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ImgUrl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ImgUrl)
+
+            <p class="pt-3">@Html.Image("Image", Model.ImgUrl, "img", "50%", "50%")</p>
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EventID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<IndentityManagement.Entities.LoggedInUsers>
+
+@{
+    ViewBag.Title = "CurrentUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Current User</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LoginDate)
+        </th>
+       <th>
+           @Html.DisplayNameFor(model => model.Hotel)
+       </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LoginDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Hotel)
+        </td>
+    </tr>
+}
+
+</table>

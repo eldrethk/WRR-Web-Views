@@ -1,0 +1,132 @@
+﻿@model  IEnumerable<WRR.Models.UserManageViewModel>
+
+@{
+    ViewBag.Title = "ManageUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Manage Users</h2>
+<hr />
+<p>@Html.ActionLink("Register New User", "Register")</p>
+@if (Enumerable.Count(Model) > 0)
+{
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <table class="table table-responsive-sm">
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.UserInfo.UserName)</th>
+            <th>@Html.DisplayNameFor(m => m.UserInfo.Status)</th>
+            <th>@Html.DisplayNameFor(m => m.UserInfo.LastLogin)</th>
+            <th>@Html.DisplayNameFor(m => m.UserRoles)</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => item.UserInfo.UserName)</td>
+                <td>
+                    @if (item.UserInfo.Status == IndentityManagement.Utilites.EnumUserStatus.Active)
+                    {
+                        <span class="badge badge-pill badge-success">
+                            @Html.DisplayFor(m => item.UserInfo.Status)
+                        </span>
+
+                    }
+                    else if (item.UserInfo.Status == IndentityManagement.Utilites.EnumUserStatus.Pending)
+                    {
+                        <div>
+                            <span class="badge badge-pill badge-secondary">
+                                @Html.DisplayFor(m => item.UserInfo.Status)
+                            </span> |
+                            @Html.ActionLink("Send Code", "SendCodeAsync", new { id = item.UserInfo.UserID, username = item.UserInfo.UserName })
+                        </div>
+                    }
+                    else if (item.UserInfo.Status == IndentityManagement.Utilites.EnumUserStatus.LockedOut)
+                    {
+                        <div>
+                            <span class="badge badge-pill badge-warning">
+                                @Html.DisplayFor(m => item.UserInfo.Status)
+                            </span> |
+                            @Html.ActionLink("Unlock", "UnlockAsync", new { id = item.UserInfo.UserID }, new { onclick = "return confirm('Are you sure you want to unlock this user?');" } )
+                        </div>
+                    }
+                    else if (item.UserInfo.Status == IndentityManagement.Utilites.EnumUserStatus.Banned)
+                    {
+                        <span class="badge badge-pill badge-danger">@Html.DisplayFor(m => item.UserInfo.Status)</span>
+                    }
+
+                </td>
+                <td>
+                    @if (item.UserInfo.LastLogin == DateTime.MinValue)
+                    {
+                        <span class="font-weight-bold text-danger">Never</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(m => item.UserInfo.LastLogin)
+                    }
+                </td>
+
+                <td>
+                    @foreach (var role in item.UserRoles)
+                    {
+                        @Html.DisplayFor(m => role)
+                    }
+                </td>
+                <td>                    
+                    @Html.ActionLink("Close Account", "CloseAccount", new { id = item.UserInfo.UserID }, new { onclick = "return confirm('Are you sure you want to ban this user?');" })
+                    @if (item.UserInfo.Status == IndentityManagement.Utilites.EnumUserStatus.Pending)
+                    {
+                        <span>|</span>
+                        @Html.ActionLink("Activate", null, new { id = "2" }, new { data_id = item.UserInfo.UserID, @class = "anchorActive" })
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No Results</div>
+}
+
+<div id='Modal' class='modal' role="dialog" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='ModalContent'></div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        var activeurl = '/Accounts/ActiveCode';
+        $(function () {
+            $('.anchorActive').click(function (e) {
+                e.preventDefault();
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+
+                $.ajax({
+                    type: "GET",
+                    url: activeurl,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id },
+                    datatype: "json",
+                    success: function (data) {
+
+                        $('#ModalContent').html(data);
+
+                        $('#Modal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            });
+        });
+    </script>
+}
