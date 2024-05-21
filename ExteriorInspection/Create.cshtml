@@ -1,0 +1,209 @@
+﻿@model WRR.Areas.Maintenance.Models.InspectionGeneralViewModel
+@using WRR.Extensions;
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Exterior Inspection</h2>
+<hr />
+<h3 class="text-primary">@Model.SelectedCategoryName</h3>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-horizontal">
+
+        @Html.HiddenFor(x => Model.CategoryIndex)
+        @Html.HiddenFor(x => Model.InspectionID)
+
+        <table class="table table-responsive-sm">
+            @foreach (var cat in Model.categories)
+            {
+                <tr>
+                    <td style="max-width:300px;">@Html.DisplayFor(x => cat.Title) - @Html.DisplayFor(x => cat.Description)</td>
+                    <td class="text-left">@Html.DropDownList(cat.CategoryID.ToString(), new List<SelectListItem>() { new SelectListItem { Text = "1 - Normal", Value = "1" }, new SelectListItem { Text = "2 - Routine", Value = "2" }, new SelectListItem { Text = "3 - Repairs", Value = "3" }, new SelectListItem { Text = "4 - Urgent", Value = "4" } }, htmlAttributes: new { @class = "custom-select ratingscale" })</td>
+                </tr>
+            }
+        </table>
+
+        <div id="overlay">
+            <div class="cv-spinner">
+                <span class="spinner"></span>
+            </div>
+        </div>
+
+        <div><span id="spnFilePath"></span></div>
+
+
+        <div class="row">
+            <div class="col-lg-2 col-sm-12 mb-2">
+                <input type="button" id="btnFileUpload2" value="Upload Pictures" class="btn btn-secondary" />
+            </div>
+            <div class="col-lg-10 col-sm-12 mb-2">
+                <input type="button" id="btnFileUpload" value="Take a Picture" class="btn btn-info d-lg-none d-xl-none" />
+            </div>
+        </div>
+
+        <div id="uploadedImages">
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Comment, htmlAttributes: new { @class = "responive-textarea" })
+                @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row m-2 justify-content-center">
+            <div class="form-row">
+                <div class="col-auto">
+                    <input type="submit" value="Save" class="btn btn-primary btn-lg" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@Html.HiddenFor(x => Model.InspectionID)
+@Html.HiddenFor(x => Model.SelectedCategory)
+@Html.HiddenFor(x => Model.CategoryIndex)
+
+<input type="file" id="FileUpload1" name="postedfile" accept="image/*" capture="environment" style="display: none" />
+<button id="saveBtn" class="no-display"></button>
+<input type="file" id="FileUpload2" name="postedfile" accept="image/*" style="display: none" />
+<button id="saveBtn2" class="no-display"></button>
+
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval");
+
+
+    <script src="~/Content/FileSizeValidate.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var fileupload = $("#FileUpload1");
+            var fileupload2 = $("#FileUpload2");
+            var filePath = $("#spnFilePath");
+            var button = $("#btnFileUpload");
+            var button2 = $("#btnFileUpload2");
+            var item = 0;
+
+            button.click(function () {
+                fileupload.click();
+            });
+            button2.click(function () {
+                FileUpload2.click();
+            });
+            fileupload.change(function () {
+                var fileName = $(this).val().split('\\')[$(this).val().split('\\').length - 1];
+                filePath.html("<b>Selected File: </b>" + fileName);
+                $('#saveBtn').click();
+            });
+            fileupload2.change(function () {
+                var fileName = $(this).val().split('\\')[$(this).val().split('\\').length - 1];
+                filePath.html("<b>Selected File: </b>" + fileName);
+                $('#saveBtn2').click();
+            })
+
+            $('#saveBtn').click(function () {
+                $("#overlay").fadeIn(300);
+                var fileupload2 = $('#FileUpload1').get(0);
+                var files2 = fileupload2.files;
+                var fileData2 = new FormData();
+
+                for (var i = 0; i < files2.length; i++) {
+                    fileData2.append(files2[i].fileName, files2[i]);
+                }
+
+                fileData2.append("InspectionID", $('#InspectionID').val());
+                fileData2.append("SelectedCategory", $('#SelectedCategory').val());
+                fileData2.append("CategoryIndex", $('#CategoryIndex').val());
+
+                $.ajax({
+                    url: '/ExteriorInspection/AddImage',
+                    type: "Post",
+                    contentType: false,
+                    processData: false,
+                    data: fileData2,
+                    success: function (result) {
+                        $("#overlay").fadeOut(300);
+                        filePath.empty();
+                        if (result.success == false) {
+                            alert(result.responseText);
+                        }
+                        else {
+                            if (item % 3 == 0 || item % 3 == 3) {
+                                $("#uploadedImages").append("<div class='row mb-2' id='imgcontainer'>");
+                            }
+                            $("#imgcontainer").append('<div class="col-md-4 pb-3"><img src="/Content/inspection-exterior-images/' + result + '" class="w-100 rounded max-height-350" /></div>');
+
+                            item++;
+                            if (item % 3 == 0 || item % 3 == 3) {
+                                $("#uploadedImages").append("</div>");
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    }
+                });
+            });
+
+            $('#saveBtn2').click(function () {
+                $("#overlay").fadeIn(300);
+                var fileupload2 = $('#FileUpload2').get(0);
+                var files2 = fileupload2.files;
+                var fileData2 = new FormData();
+
+                for (var i = 0; i < files2.length; i++) {
+                    fileData2.append(files2[i].fileName, files2[i]);
+                }
+
+                fileData2.append("InspectionID", $('#InspectionID').val());
+                fileData2.append("SelectedCategory", $('#SelectedCategory').val());
+                fileData2.append("CategoryIndex", $('#CategoryIndex').val());
+
+
+                $.ajax({
+                    url: '/ExteriorInspection/AddImage',
+                    type: "Post",
+                    contentType: false,
+                    processData: false,
+                    data: fileData2,
+                    success: function (result) {
+                        $("#overlay").fadeOut(300);
+                        filePath.empty();
+                        if (result.success == false) {
+                            alert(result.responseText);
+                        }
+                        else {
+                            if (item % 3 == 0 || item % 3 == 3) {
+                                $("#uploadedImages").append("<div class='row mb-2' id='imgcontainer'>");
+                            }
+                            $("#imgcontainer").append('<div class="col-md-4 pb-3"><img src="/Content/inspection-exterior-images/' + result + '" class="w-100 rounded max-height-350" /></div>');
+
+                            item++;
+                            if (item % 3 == 0 || item % 3 == 3) {
+                                $("#uploadedImages").append("</div>");
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    }
+                });
+            });
+
+
+        });
+    </script>
+}

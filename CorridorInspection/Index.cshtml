@@ -1,0 +1,112 @@
+﻿@model WRR.Areas.Maintenance.Models.InspectionGeneralReportViewModel
+
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Corridor Inspection</h2>
+<hr />
+@if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel") || User.IsInRole("Maintenance"))
+{
+<p>
+    @Html.ActionLink("Create Inspection", "Create", new { @CategoryIndex = 1 }, htmlAttributes: new { @class = "btn btn-success" })
+</p>
+}
+<div>
+    <h3 class="text-dark">Rating Scale</h3>
+    <p><b class="text-success">1 - Normal</b> : No Defects or damage element. Well maintained</p>
+    <p><b class="text-primary">2 - Routine</b> : Minor defects or damage. Needs monitoring, repairs or replaced to prevent serious damage.</p>
+    <p><b class="text-warning">3 - Repairs</b> : Major defects or damage. Needs for major repairs and replacements</p>
+    <p><b class="text-danger">4 - Urgent</b> : Out of services</p>
+</div>
+
+<hr />
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h3 class="m-0 text-primary">Inspection for the Past 2 Years</h3>
+    </div>
+    <div class="card-body">
+        @if (Model.InspectionQue.Count > 0)
+        {
+            <div class="table-responsive table-hover">
+
+                <table class="table table-bordered table-responsive-sm" id="dataTable" width="100%" cellspacing="0">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Inspection.InspectionID)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Inspection.UserID)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Inspection.CreatedDate)
+                        </th>
+
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model.InspectionQue)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelitem => item.InspectionID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatedDate)
+                            </td>
+
+                            <td>
+                                @Html.ActionLink("Print Full Report", "Print", new { id = item.InspectionID }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.InspectionID, index = 1 }) |
+                                @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                                {
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.InspectionID }, new { onclick = "return confirm('Are you sure you want to delete?');" })
+                                }
+                                else if (User.IsInRole("Maintenance"))
+                                {
+                                    @Html.ActionLink("Delete", "AskForDelete", new { id = item.InspectionID }, new { onclick = "return confirm('The Hotel Manager will be notified to delete this Inspection. Do you wish to continue?');" })
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+                <br />
+                <div>
+                    @Html.PagedListPager(Model.InspectionQue, page => Url.Action("Index", new { page }))
+
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">No Results</div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+            $('ul.pagination li').addClass("page-item");
+            $('ul.pagination li a').addClass("page-link");
+
+
+        });
+
+    </script>
+
+}
+

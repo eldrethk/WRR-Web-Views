@@ -1,0 +1,66 @@
+﻿@model IEnumerable<WRR.Maintenance.Models.InspectionBanquet>
+
+@{
+                /**/
+
+                ViewBag.Title = "BanquetReport";
+                Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Banquet @ViewBag.BanquetName Report</h2>
+
+@if (Enumerable.Count(Model) > 0)
+{
+    <table class="table">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.InspectionID)</th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.BanquetName)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.InspectionID)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.BanquetName)
+                </td>
+                <td>
+                    @Html.ActionLink("Print Full Report", "Print", new { id = item.InspectionID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.InspectionID, index = 1 }) |
+                    @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                    {
+                        @Html.ActionLink("Delete", "Delete", new { id = item.InspectionID }, new { onclick = "return confirm('Are you sure you want to delete?');" })
+                    }
+                    else if (User.IsInRole("Maintenance"))
+                    {
+                        @Html.ActionLink("Delete", "AskForDelete", new { id = item.InspectionID }, new { onclick = "return confirm('The Hotel Manager will be notified to delete this Inspection. Do you wish to continue?');" })
+                    }
+
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No Results</div>
+}
+

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<WRR.Areas.Maintenance.Models.BanquetViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Banquet Rooms</h2>
+
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@if (Enumerable.Count(Model) > 0)
+{
+    <table class="table table-responsive-sm">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Banquet.BanquetName)</th>
+
+            <th>@Html.DisplayNameFor(model => model.Banquet.BuildingName)</th>
+
+       
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => item.Banquet.BanquetName)</td>
+
+                <td>@Html.DisplayFor(m => item.Banquet.BuildingName)</td>
+                         
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Banquet.BanquetID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Banquet.BanquetID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Banquet.BanquetID }, new { onclick = "return confirm('Are you sure you want to delete?');" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No Results</div>
+}

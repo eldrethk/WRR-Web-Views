@@ -1,0 +1,135 @@
+﻿@model WRR.Areas.Maintenance.Models.InspectionBanquetPrintViewModel
+
+@using WRR.Extensions;
+
+@{
+    ViewBag.Title = "Print";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h2>Banquet Inspection</h2>
+    <hr />
+    <div class="row m-2 justify-content-center">
+        <h2 class="text-center text-success">Banquet : @Html.DisplayFor(x => x.Inspection.BanquetName)</h2>
+    </div>
+    <div class="row m-2 justify-content-center">
+        <h2 class="text-center text-dark">Building : @Html.DisplayFor(x => x.Inspection.Building)</h2>
+    </div>
+    <div class="row m-2 justify-content-center">
+        <h2 class="text-center">Inspection Done By : @Html.DisplayFor(x => x.Inspection.UserID) </h2>
+    </div>
+    <div class="row m-2 justify-content-center h5">
+        @Model.Inspection.CreatedDate.ToString("dddd MMM dd, yyyy h:mm:ss tt")
+    </div>
+    <div class="row pt-2 m-2 justify-content-center noprint">
+        <button type="button" id="btnPrint" onclick="window.print();" class="btn btn-success btn-lg">Print</button>
+    </div>
+
+    <br />
+
+
+    @foreach (var item in Model.InspectionFulls)
+    {
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h1 class="text-primary">@Html.DisplayFor(x => item.CategoryName)</h1>
+            </div>
+            <div class="card-body">
+                <table class="table table-responsive-sm table-hover">
+                    @foreach (var cat in item.Report)
+                    {
+                        <tr>
+                            <td style="max-width:300px;"><strong>@Html.DisplayFor(x => cat.Title)</strong> - @Html.DisplayFor(x => cat.Description)</td>
+                            <td>
+                                @if (cat.Rating == 1)
+                                {<b class="text-success">1 - Normal</b>}
+                                else if (cat.Rating == 2)
+                                { <b class="text-secondary">2 - Routine</b>}
+                                else if (cat.Rating == 3)
+                                {<b class="text-warning">3 - Repairs</b> }
+                                else if (cat.Rating == 4)
+                                {<b class="text-danger">4 - Urgent</b>}
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+                @foreach (var comment in item.Comments)
+                {
+                    <h4 class="text-primary pt-2">Comments</h4>
+                    <div class="card border-dark mb-3">
+                        <div class="card-header bg-secondary text-white">Comment by : @Html.DisplayFor(x => comment.UserID) - @comment.CreatedDate.ToString("dddd MMM dd, yyyy h:mm:ss tt")</div>
+                        <div class="card-body">
+                            <p class="card-text">@Html.DisplayFor(x => comment.Comment)</p>
+                        </div>
+                    </div>
+                }
+
+                @if (Enumerable.Count(item.Images) > 0)
+                {
+                    <h4 class="text-primary">Images</h4>
+                    <div class="row mb-2">
+                        @foreach (var img in item.Images)
+                        {
+
+                            <div class="col-lg-3 col-md-5 p-2">
+                                <div class="p-2 viewmore-img-container">
+                                    <a class="anchorAdd simple-img" data-id='@img.ImageID'> @Html.ImageWithClass(img.ImageID.ToString(), string.Format("/Content/inspection-banquet-images/{0}", img.ImageName), img.ImageName, "w-100 rounded max-height-350")</a>
+                                    <a class="anchorAdd zoom-icon" data-id="@img.ImageID"><span class="fas fa-expand fa-3x"></span></a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+            </div>
+        </div>
+    }
+
+    <div id='addModal' class='modal' role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div id='addModalContent'></div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+           $('.anchorAdd').click(function (e) {
+
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ViewImage", "BanquetInspection", new { area = "Maintenance" })',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id },
+                    datatype: "json",
+                    success: function (data) {
+
+                        $('#addModalContent').html(data);
+
+                        $('#addModal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+            });
+
+
+    </script>
+}
+
+

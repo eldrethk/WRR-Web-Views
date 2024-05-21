@@ -1,0 +1,11 @@
+﻿@model WRR.Maintenance.Models.InspectionImages
+
+@using WRR.Extensions
+
+<div class="modal-body">
+    @Html.ImageWithClass(Model.ImageID.ToString(), string.Format("/Content/inspection-exterior-images/{0}", Model.ImageName), Model.ImageName, "w-100")
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

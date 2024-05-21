@@ -1,0 +1,141 @@
+﻿@model WRR.Areas.Maintenance.Models.RoomViewModel
+@using WRR.Extensions;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Guest Rooms</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", null, htmlAttributes: new { @class = "btn btn-success" })
+</p>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-lg-auto m-2 text-center">
+        @Html.ActionLink("View All", "Index", null, htmlAttributes: new { @class = "btn btn-primary" })
+    </div>
+    <div class="col-lg-auto">
+        @using (Html.BeginForm("SortBuilding", "Room", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken();
+            @Html.ValidationSummary(true, "", new { @class = "text-danger text-center" })
+
+            <div class="row m-2 pb-3 justify-content-center">
+                <div class="form-row">
+                    <div class="col-auto">
+                        @Html.DropDownListFor(model => model.SelectedBuildingID, new SelectList(Model.SelectedBuilding, "Value", "Text"), htmlAttributes: new { @class = "custom-select" })
+                    </div>
+                    <div class="col-auto my-auto">
+                        <input type="submit" value="Sort" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-lg-auto">
+        @using (Html.BeginForm("SortRoomType", "Room", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken();
+            @Html.ValidationSummary(true, "", new { @class = "text-danger text-center" })
+
+            <div class="row m-2 pb-3 justify-content-center">
+                <div class="form-row">
+                    <div class="col-auto">
+                        @Html.DropDownListFor(model => model.SelectedRoomTypeID, new SelectList(Model.SelectedRoomType, "Value", "Text"), htmlAttributes: new { @class = "custom-select" })
+                    </div>
+                    <div class="col-auto my-auto">
+                        <input type="submit" value="Sort" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-lg-auto">
+        @using (Html.BeginForm("SortFloorNum", "Room", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken();
+            @Html.ValidationSummary(true, "", new { @class = "text-danger text-center" })
+
+            <div class="row m-2 pb-3 justify-content-center">
+                <div class="form-row">
+                    <div class="col-auto">
+                        @Html.DropDownListFor(model => model.SelectedFloorNum, Enumerable.Range(1, 20).Select(num => new SelectListItem { Text = num.ToString(), Value = num.ToString() }), htmlAttributes: new { @class = "custom-select" })
+                    </div>
+                    <div class="col-auto my-auto">
+                        <input type="submit" value="Sort" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+<hr class="d-lg-none d-xl-none"/>
+
+    @if (Enumerable.Count(Model.AllRooms) > 0)
+    {
+        <table class="table table-responsive w-100">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Room.RoomNumber)</th>
+
+                <th>@Html.DisplayNameFor(model => model.Room.BuildingName)</th>
+
+                <th>@Html.DisplayNameFor(model => model.Room.FloorNumber)</th>
+
+                <th>@Html.DisplayNameFor(model => model.Room.RoomTypeName)</th>
+
+                <th>@Html.DisplayNameFor(model => model.Room.Handicap)</th>
+
+                <th>@Html.DisplayNameFor(model => model.Room.SafeInRoom)</th>
+                <th class="text-center">Serial Numbers</th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.AllRooms)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(m => item.RoomNumber)</td>
+
+                    <td>@Html.DisplayFor(m => item.BuildingName)</td>
+
+                    <td>@Html.DisplayFor(m => item.FloorNumber)</td>
+
+                    <td>@Html.DisplayFor(m => item.RoomTypeName)</td>
+
+                    <td>
+                        @if (item.Handicap == true)
+                        {
+                            <span class="badge badge-pill badge-success">True</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-pill badge-danger">False</span>
+                        }
+                    </td>
+
+                    <td>
+                        @if (item.SafeInRoom == true)
+                        {
+                            <span class="badge badge-pill badge-success">True</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-pill badge-danger">False</span>
+                        }
+                    </td>
+                    <td class="text-center">@Html.IconActionLink("", "Index", "RoomSerialNum", new { id = item.RoomID}, null, "fas fa-barcode fa-3x text-dark")</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.RoomID }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.RoomID }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.RoomID }, new { onclick = "return confirm('Are you sure you want to delete?');" })
+                    </td>
+                </tr>
+            }
+
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">No Results</div>
+    }

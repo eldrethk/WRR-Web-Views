@@ -1,0 +1,101 @@
+﻿@model WRR.Areas.Maintenance.Models.SerialNumViewModel
+
+@using WRR.Extensions;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Guest Room @Html.DisplayFor(model => model.RoomNum) Serial Number</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.SerialNumber.RoomID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SerialNumber.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SerialNumber.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SerialNumber.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SerialNumber.SerialNum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SerialNumber.SerialNum, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SerialNumber.SerialNum, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SerialNumber.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+   
+                @Html.EnumDropDownListFor(model => model.GuestRoomCategories, htmlAttributes: new { @class = "custom-select" })
+                @Html.ValidationMessageFor(model => model.SerialNumber.CategoryName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row m-2 justify-content-center" style="max-width:80%;">
+            <div class="form-row">
+                <div class="col-auto">
+                    <input type="submit" value="Create" class="btn btn-primary btn-lg" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+<br/>
+
+@if (Enumerable.Count(Model.SerialNumbers) > 0)
+{
+    <table class="table table-responsive-sm">
+        <tr>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Serial Number</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.SerialNumbers)
+        {
+            <tr>
+                <td>@HtmlHelperExtensions.GetDisplayName(Model.GuestRoomCategories, item.CategoryName)</td>
+                <td>@Html.DisplayFor(x => item.Description)</td>
+                <td>@Html.DisplayFor(x => item.SerialNum)</td>
+                <td>
+                    @if (User.IsInRole("WRRAdmin") || User.IsInRole("Hotel"))
+                    {
+                        @Html.ActionLink("Delete", "Delete", new { id = item.ID, roomid = item.RoomID }, new { onclick = "return confirm('Are you sure you want to delete');" })
+                    }
+                    else if (User.IsInRole("Maintenance"))
+                    {
+                        @Html.ActionLink("Delete", "AskForDelete", new { id = item.ID }, new { onclick = "return confirm('The Hotel Manager will be notified to delete this Inspection. Do you wish to continue?');" })
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No Results</div>
+}
+
+
+
+
+
+
+

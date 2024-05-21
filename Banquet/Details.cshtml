@@ -1,0 +1,37 @@
+﻿@model WRR.Areas.Maintenance.Models.BanquetViewModel
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Banquet Details</h2>
+
+<hr />
+<div>
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Banquet.BanquetName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Banquet.BanquetName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BuildingName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BuildingName)
+        </dd>
+
+
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Banquet.BanquetID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

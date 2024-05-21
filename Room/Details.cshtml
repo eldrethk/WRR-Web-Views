@@ -1,0 +1,69 @@
+﻿@model WRR.Areas.Maintenance.Models.RoomViewModel
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Room Detail</h2>
+<hr />
+<div>
+   
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Room.RoomNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Room.RoomNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Room.FloorNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Room.FloorNumber)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BuildingName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BuildingName)
+        </dd>
+
+      
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RoomTypeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoomTypeName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Room.Handicap)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Room.Handicap)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Room.SafeInRoom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Room.SafeInRoom)
+        </dd>
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Room.RoomID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
